@@ -111,8 +111,9 @@
                     <i class="fa-solid fa-table-list text-amber-600"></i>
                     <span class="hidden md:inline">Rekap Nilai</span>
                 </button>
-                <button onclick="openTeacherModal()" class="w-10 h-10 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-800 flex items-center justify-center transition border border-teal-200" title="Pengaturan Spreadsheet & GitHub (Guru)">
-                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                <button onclick="openTeacherModal()" class="px-3 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-semibold text-xs sm:text-sm flex items-center gap-1.5 shadow-sm transition" title="Panduan GitHub Anti-404 & Spreadsheet">
+                    <i class="fa-brands fa-github"></i>
+                    <span class="hidden sm:inline">Panduan GitHub & Sheet</span>
                 </button>
             </div>
         </div>
@@ -639,15 +640,20 @@ function doGet(e) {
                 </div>
 
                 <!-- Step 3: GitHub Pages Instructions -->
-                <div class="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 space-y-1.5">
-                    <div class="font-bold text-amber-950 flex items-center gap-1.5">
-                        <i class="fa-brands fa-github text-base"></i> 3. Cara Memasang di GitHub Pages:
+                <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 space-y-2.5">
+                    <div class="font-bold text-amber-950 flex items-center gap-1.5 text-sm">
+                        <i class="fa-brands fa-github text-lg"></i> 3. Solusi Ampuh Mengatasi Error 404 di GitHub (`it-mugeb/bebrasmugeb`):
                     </div>
-                    <p class="text-xs text-slate-700 leading-relaxed">
-                        1. Simpan file ini dengan nama <code>index.html</code> (agar langsung terbuka saat tautan GitHub diakses).<br>
-                        2. Agar siswa di perangkat mana pun langsung terhubung ke Spreadsheet Anda tanpa perlu mengatur URL, masukkan URL Web App Anda pada baris <code>const DEFAULT_SCRIPT_URL = "URL_ANDA_DI_SINI";</code> di dalam kode.<br>
-                        3. Upload <code>index.html</code> ke repository GitHub Anda, lalu aktifkan menu <strong>Settings &rarr; Pages &rarr; Branch: main / root</strong>.
-                    </p>
+                    <ol class="list-decimal list-inside text-xs text-slate-700 space-y-1.5 leading-relaxed">
+                        <li>Buka link repository Anda: <strong>https://github.com/it-mugeb/bebrasmugeb</strong></li>
+                        <li>Pastikan repository Anda berstatus <strong>Public</strong> (Jika <em>Private</em>, GitHub Pages gratis tidak akan jalan dan muncul 404. Ubah di <em>Settings &rarr; General &rarr; Change repository visibility &rarr; Public</em>).</li>
+                        <li>Di halaman utama kode, klik tombol <strong>Add file &rarr; Create new file</strong>.</li>
+                        <li>Pada kotak nama file di atas, ketik persis huruf kecil semua: <code>index.html</code></li>
+                        <li>Salin seluruh kode dari editor di sebelah kanan ini, lalu <strong>Paste (Tempel)</strong> ke kotak editor GitHub tersebut.</li>
+                        <li>Klik tombol hijau <strong>Commit changes...</strong> di pojok kanan atas, lalu klik <strong>Commit changes</strong>.</li>
+                        <li>Buka menu <strong>Settings &rarr; Pages</strong> (di menu kiri). Pada bagian <strong>Branch</strong>, ubah dari <em>None</em> menjadi <strong>main</strong> (atau <strong>master</strong>), pastikan sebelahnya <strong>/ (root)</strong>, lalu klik <strong>Save</strong>.</li>
+                        <li>Tunggu 1–2 menit, lalu buka: <strong>https://it-mugeb.github.io/bebrasmugeb/</strong></li>
+                    </ol>
                 </div>
             </div>
 
