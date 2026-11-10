@@ -1,1 +1,2293 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUGEB Bebras CT Adventure - SD Muhammadiyah GKB Gresik</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --mugeb-teal: #006778;
+            --mugeb-orange: #EA7600;
+            --mugeb-dark: #2B2B2B;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at top right, #e0f2fe, #f0fdf4, #fff7ed);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .font-game {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .btn-3d {
+            transition: all 0.15s ease;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+        }
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+        }
+        .btn-teal {
+            background: linear-gradient(135deg, #007d91, #005968);
+            box-shadow: 0 6px 0 #003d47;
+        }
+        .btn-teal:active {
+            box-shadow: 0 2px 0 #003d47;
+        }
+        .btn-orange {
+            background: linear-gradient(135deg, #ff8c1a, #e66b00);
+            box-shadow: 0 6px 0 #b35300;
+        }
+        .btn-orange:active {
+            box-shadow: 0 2px 0 #b35300;
+        }
+        .option-card {
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .option-card:hover:not(:disabled) {
+            transform: translateY(-3px) scale(1.01);
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float {
+            animation: float 3.5s ease-in-out infinite;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen">
 
+    <!-- Top Navigation Bar with MUGEB Logo -->
+    <header class="bg-white/90 backdrop-blur-md border-b-2 border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-2.5 flex flex-wrap justify-between items-center gap-3">
+            <!-- Recreated Official MUGEB Primary School Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="confirmReturnHome()">
+                <div class="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center">
+                    <div class="flex items-baseline gap-1.5 leading-none">
+                        <span class="font-extrabold text-2xl sm:text-3xl tracking-tight" style="color: #006778; font-family: 'Plus Jakarta Sans', sans-serif;">MUGEB</span>
+                        <span class="font-bold italic text-base sm:text-xl" style="color: #EA7600; font-family: 'Plus Jakarta Sans', sans-serif;">Primary School</span>
+                    </div>
+                    <span class="font-bold text-[10px] sm:text-xs tracking-wider mt-0.5" style="color: #2B2B2B;">SD Muhammadiyah GKB Gresik</span>
+                </div>
+            </div>
+
+            <!-- Right Controls & Live Stats -->
+            <div class="flex items-center gap-2 sm:gap-4">
+                <div id="liveStats" class="hidden items-center gap-2 sm:gap-3 bg-slate-100 px-3 py-1.5 rounded-2xl border border-slate-200">
+                    <div class="flex items-center gap-1.5 text-amber-600 font-game font-semibold text-sm sm:text-base">
+                        <i class="fa-solid fa-star text-amber-400"></i>
+                        <span id="headerScore">0</span>
+                    </div>
+                    <div class="h-4 w-[1px] bg-slate-300"></div>
+                    <div class="flex items-center gap-1.5 text-teal-700 font-game font-semibold text-sm sm:text-base">
+                        <i class="fa-solid fa-fire text-orange-500"></i>
+                        <span id="headerStreak">0</span>
+                    </div>
+                </div>
+
+                <button id="soundToggleBtn" onclick="toggleSound()" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition border border-slate-200" title="Suara Efek">
+                    <i id="soundIcon" class="fa-solid fa-volume-high text-teal-700"></i>
+                </button>
+                <button onclick="openQuestionMap()" id="mapBtn" class="hidden px-3 py-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-800 font-semibold text-xs sm:text-sm items-center gap-1.5 border border-teal-200 transition">
+                    <i class="fa-solid fa-table-cells"></i>
+                    <span class="hidden sm:inline">Peta Soal</span>
+                </button>
+                <button onclick="openLeaderboardModal()" class="px-3 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold text-xs sm:text-sm flex items-center gap-1.5 border border-amber-200 transition" title="Rekap Skor & Spreadsheet">
+                    <i class="fa-solid fa-table-list text-amber-600"></i>
+                    <span class="hidden md:inline">Rekap Nilai</span>
+                </button>
+                <button onclick="openTeacherModal()" class="w-10 h-10 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-800 flex items-center justify-center transition border border-teal-200" title="Pengaturan Spreadsheet & GitHub (Guru)">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-6 flex flex-col justify-center">
+
+        <!-- ================= SCREEN 1: START / HOME SCREEN ================= -->
+        <section id="startScreen" class="bg-white rounded-3xl shadow-xl border-2 border-teal-100 overflow-hidden">
+            <div class="bg-gradient-to-r from-[#006778] via-[#008399] to-[#006778] p-6 sm:p-10 text-white relative overflow-hidden">
+                <!-- Decorative background shapes -->
+                <div class="absolute -right-10 -top-10 w-44 h-44 bg-white/10 rounded-full blur-xl"></div>
+                <div class="absolute left-10 -bottom-12 w-36 h-36 bg-amber-400/20 rounded-full blur-lg"></div>
+
+                <div class="relative z-10 flex flex-col md:flex-row items-center gap-6">
+                    <!-- Mascot Beaver SVG -->
+                    <div class="w-28 h-28 sm:w-36 sm:h-36 bg-white rounded-3xl p-3 shadow-lg border-4 border-amber-400 animate-float flex-shrink-0 flex items-center justify-center">
+                        <svg viewBox="0 0 120 120" class="w-full h-full">
+                            <!-- Beaver Ears -->
+                            <circle cx="30" cy="30" r="12" fill="#8B5A2B"/>
+                            <circle cx="30" cy="30" r="6" fill="#D2B48C"/>
+                            <circle cx="90" cy="30" r="12" fill="#8B5A2B"/>
+                            <circle cx="90" cy="30" r="6" fill="#D2B48C"/>
+                            <!-- Head -->
+                            <ellipse cx="60" cy="60" rx="40" ry="36" fill="#A0522D"/>
+                            <!-- Graduation / Explorer Hat -->
+                            <path d="M25 32 Q60 15 95 32 L85 20 Q60 10 35 20 Z" fill="#006778"/>
+                            <rect x="45" y="14" width="30" height="8" rx="4" fill="#EA7600"/>
+                            <!-- Cheeks -->
+                            <ellipse cx="45" cy="68" rx="14" ry="11" fill="#DEB887"/>
+                            <ellipse cx="75" cy="68" rx="14" ry="11" fill="#DEB887"/>
+                            <!-- Eyes -->
+                            <circle cx="44" cy="50" r="5" fill="#1e293b"/>
+                            <circle cx="42" cy="48" r="2" fill="#ffffff"/>
+                            <circle cx="76" cy="50" r="5" fill="#1e293b"/>
+                            <circle cx="74" cy="48" r="2" fill="#ffffff"/>
+                            <!-- Nose -->
+                            <ellipse cx="60" cy="60" rx="8" ry="5" fill="#3e2723"/>
+                            <!-- Beaver Teeth -->
+                            <rect x="53" y="72" width="6" height="10" rx="1.5" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+                            <rect x="61" y="72" width="6" height="10" rx="1.5" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+                        </svg>
+                    </div>
+
+                    <div class="text-center md:text-left">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400 text-slate-900 font-bold text-xs uppercase tracking-wider mb-3 shadow-sm">
+                            <i class="fa-solid fa-bolt"></i> Tantangan Bebras Siaga SD/MI
+                        </div>
+                        <h1 class="font-game text-3xl sm:text-5xl font-bold tracking-wide leading-tight">
+                            MUGEB Bebras <span class="text-amber-300">CT Adventure</span>
+                        </h1>
+                        <p class="text-teal-50 mt-2 text-sm sm:text-base max-w-2xl">
+                            Asah kemampuan <strong>Computational Thinking</strong> (Dekomposisi, Pengenalan Pola, Abstraksi, & Algoritma) lewat 25 tantangan seru berbasis Buku Bebras Indonesia!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Player Setup & Mode Selection -->
+            <div class="p-6 sm:p-8 space-y-6">
+                <!-- School Brand Banner inside Card -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold text-lg">
+                            <i class="fa-solid fa-school"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-slate-800 text-sm sm:text-base">MUGEB Primary School — SD Muhammadiyah GKB Gresik</h2>
+                            <p class="text-xs text-slate-500">Program Penguatan Berpikir Komputasional & Literasi Digital</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-lg bg-orange-100 text-orange-800 font-bold text-xs">
+                        Total: 25 Soal & Pembahasan
+                    </span>
+                </div>
+
+                <!-- Input Player Info -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                            <i class="fa-solid fa-user-astronaut text-teal-600 mr-1"></i> Nama Lengkap Siswa
+                        </label>
+                        <input id="playerNameInput" type="text" placeholder="Ketik namamu di sini..." value=""
+                            class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-teal-600 focus:outline-none font-semibold text-slate-800 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                            <i class="fa-solid fa-id-card text-teal-600 mr-1"></i> No. Absen / NIS
+                        </label>
+                        <input id="playerAbsentInput" type="text" placeholder="Contoh: 12" value=""
+                            class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-teal-600 focus:outline-none font-semibold text-slate-800 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                            <i class="fa-solid fa-graduation-cap text-orange-500 mr-1"></i> Kelas Kategori Siaga
+                        </label>
+                        <select id="playerClassInput" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-teal-600 focus:outline-none font-semibold text-slate-800 bg-white transition">
+                            <option value="Kelas 4 ICP">Kelas 4 ICP</option>
+                            <option value="Kelas 4 Reguler">Kelas 4 Reguler</option>
+                            <option value="Kelas 5 ICP" selected>Kelas 5 ICP</option>
+                            <option value="Kelas 5 Reguler">Kelas 5 Reguler</option>
+                            <option value="Kelas 6 ICP">Kelas 6 ICP</option>
+                            <option value="Kelas 6 Reguler">Kelas 6 Reguler</option>
+                            <option value="Tim Olimpiade MUGEB">Tim Olimpiade MUGEB</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="nameValidationAlert" class="hidden bg-rose-50 border border-rose-300 text-rose-800 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-circle-exclamation text-rose-600"></i>
+                    <span>Silakan isi Nama Lengkap Siswa terlebih dahulu sebelum memulai permainan!</span>
+                </div>
+
+                <!-- Game Mode Filter -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+                        <i class="fa-solid fa-layer-group text-teal-600 mr-1"></i> Pilih Paket Tantangan
+                    </label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <button onclick="selectMode('ALL')" id="mode_ALL" class="mode-btn p-4 rounded-2xl border-2 border-teal-600 bg-teal-50/70 text-left transition flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-game font-bold text-teal-900 text-lg">25 Soal Lengkap</span>
+                                    <span class="bg-teal-600 text-white text-xs px-2 py-0.5 rounded-full font-bold">Rekomendasi</span>
+                                </div>
+                                <p class="text-xs text-slate-600">15 Soal Asli Bebras 2020 + 10 Soal Pengembangan Konsep Setara</p>
+                            </div>
+                            <div class="mt-3 text-xs font-bold text-teal-700">Skor Maks: 100 Poin (4 Poin/Soal)</div>
+                        </button>
+
+                        <button onclick="selectMode('ORIGINAL')" id="mode_ORIGINAL" class="mode-btn p-4 rounded-2xl border-2 border-slate-200 hover:border-teal-400 bg-white text-left transition flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-game font-bold text-slate-800 text-lg">15 Soal Asli Buku</span>
+                                    <span class="bg-slate-200 text-slate-700 text-xs px-2 py-0.5 rounded-full font-bold">Original</span>
+                                </div>
+                                <p class="text-xs text-slate-600">Fokus ke 15 soal orisinal dari buku Tantangan Bebras Indonesia 2020</p>
+                            </div>
+                            <div class="mt-3 text-xs font-bold text-slate-500">Nomor 1 s.d. 15</div>
+                        </button>
+
+                        <button onclick="selectMode('EXPANSION')" id="mode_EXPANSION" class="mode-btn p-4 rounded-2xl border-2 border-slate-200 hover:border-teal-400 bg-white text-left transition flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-game font-bold text-slate-800 text-lg">10 Soal Tantangan+</span>
+                                    <span class="bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full font-bold">Pengembangan</span>
+                                </div>
+                                <p class="text-xs text-slate-600">10 soal baru dengan konsep komputasi yang sama untuk latihan ekstra</p>
+                            </div>
+                            <div class="mt-3 text-xs font-bold text-slate-500">Nomor 16 s.d. 25</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Start Button -->
+                <div class="pt-2 flex flex-col sm:flex-row gap-3">
+                    <button onclick="startGame()" class="btn-3d btn-orange flex-1 py-4 px-6 rounded-2xl text-white font-game font-bold text-xl tracking-wide flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-play"></i> MULAI PETUALANGAN SEKARANG!
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SCREEN 2: QUIZ / GAMEPLAY SCREEN ================= -->
+        <section id="quizScreen" class="hidden space-y-4">
+            <!-- Progress & Meta Header -->
+            <div class="bg-white rounded-2xl p-4 shadow-md border border-slate-200">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                    <div class="flex items-center gap-2">
+                        <span id="qNumberBadge" class="px-3 py-1 rounded-xl bg-teal-700 text-white font-game font-bold text-sm">
+                            Soal 1 / 25
+                        </span>
+                        <span id="qSourceBadge" class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800 font-bold text-xs">
+                            2020-BE-03
+                        </span>
+                        <span id="qCategoryBadge" class="hidden sm:inline-block px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-semibold text-xs">
+                            Pengenalan Pola
+                        </span>
+                    </div>
+                    <div class="text-xs font-bold text-slate-500">
+                        Dijawab: <span id="answeredCountText" class="text-teal-700">0</span>/<span id="totalCountText">25</span>
+                    </div>
+                </div>
+                <!-- Progress Bar -->
+                <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200">
+                    <div id="progressBar" class="h-full bg-gradient-to-r from-teal-500 to-amber-500 rounded-full transition-all duration-300" style="width: 4%"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white rounded-3xl shadow-xl border-2 border-slate-200 overflow-hidden">
+                <!-- Question Title Banner -->
+                <div class="bg-slate-800 text-white px-6 py-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span id="qCountryFlag" class="text-2xl">🇧🇪</span>
+                        <h2 id="qTitle" class="font-game text-xl sm:text-2xl font-bold tracking-wide">Manik-manik</h2>
+                    </div>
+                    <span class="text-xs px-2.5 py-1 rounded-full bg-white/15 font-semibold">Siaga SD</span>
+                </div>
+
+                <div class="p-5 sm:p-7 space-y-5">
+                    <!-- Story & Visual Diagram -->
+                    <div id="qStory" class="text-slate-700 text-sm sm:text-base leading-relaxed space-y-2"></div>
+
+                    <!-- Dynamic SVG / Interactive Illustration Container -->
+                    <div id="qVisualContainer" class="bg-slate-50 rounded-2xl p-4 border-2 border-dashed border-slate-200 flex justify-center items-center overflow-x-auto">
+                    </div>
+
+                    <!-- Challenge Prompt Box -->
+                    <div class="bg-teal-50/80 border-l-4 border-teal-600 p-4 rounded-r-2xl">
+                        <div class="text-xs font-extrabold uppercase tracking-wider text-teal-800 mb-1">
+                            <i class="fa-solid fa-bullseye mr-1"></i> Tantangan:
+                        </div>
+                        <p id="qChallenge" class="font-bold text-slate-900 text-sm sm:text-base"></p>
+                    </div>
+
+                    <!-- Answer Options Grid -->
+                    <div id="optionsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+                    </div>
+
+                    <!-- Discussion / Explanation Box (Appears after answering) -->
+                    <div id="explanationBox" class="hidden rounded-2xl p-5 border-2 transition-all">
+                        <div class="flex items-start gap-3">
+                            <div id="expIconBox" class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0 mt-0.5">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <div class="space-y-2 flex-1">
+                                <div class="flex flex-wrap items-center justify-between gap-2">
+                                    <h3 id="expHeading" class="font-game font-bold text-lg">Jawaban Tepat! (+4 Poin)</h3>
+                                    <span id="expCorrectKey" class="text-xs font-extrabold px-2.5 py-1 rounded-lg bg-white/80 border">Kunci: C</span>
+                                </div>
+                                <div class="text-xs sm:text-sm font-semibold text-slate-600 bg-white/80 p-3.5 rounded-xl border border-slate-200/80 leading-relaxed space-y-1.5">
+                                    <div class="font-bold text-teal-800 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-lightbulb text-amber-500"></i> Pembahasan & Konsep Informatika:
+                                    </div>
+                                    <div id="expText" class="text-slate-700"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Navigation Buttons -->
+                    <div class="pt-3 border-t border-slate-200 flex items-center justify-between gap-3">
+                        <button id="prevBtn" onclick="prevQuestion()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm flex items-center gap-2 transition disabled:opacity-40">
+                            <i class="fa-solid fa-arrow-left"></i> Sebelumnya
+                        </button>
+
+                        <button id="nextBtn" onclick="nextQuestion()" class="btn-3d btn-teal px-6 py-3 rounded-xl text-white font-game font-bold text-base flex items-center gap-2">
+                            <span>Soal Berikutnya</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SCREEN 3: FINAL RESULT & REVIEW SCREEN ================= -->
+        <section id="resultScreen" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl shadow-xl border-2 border-teal-100 overflow-hidden">
+                <div class="bg-gradient-to-br from-[#006778] to-[#004c59] p-6 sm:p-8 text-white text-center relative">
+                    <!-- School Logo Badge on Certificate -->
+                    <div class="inline-flex items-center gap-2 bg-white px-4 py-1.5 rounded-full shadow-md mb-4">
+                        <span class="font-extrabold text-sm" style="color:#006778;">MUGEB</span>
+                        <span class="font-bold italic text-xs" style="color:#EA7600;">Primary School</span>
+                        <span class="text-slate-400">|</span>
+                        <span class="font-semibold text-[11px] text-slate-700">SD Muhammadiyah GKB Gresik</span>
+                    </div>
+
+                    <h2 class="font-game text-3xl sm:text-4xl font-bold">Petualangan Selesai! 🎉</h2>
+                    <p id="resultPlayerInfo" class="text-teal-100 mt-1 text-sm sm:text-base font-medium"></p>
+
+                    <!-- Big Score Circle -->
+                    <div class="my-6 inline-flex flex-col items-center justify-center w-36 h-36 sm:w-44 sm:h-44 rounded-full bg-white text-slate-800 shadow-2xl border-8 border-amber-400">
+                        <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Skor Akhir</span>
+                        <span id="finalScoreValue" class="font-game text-5xl sm:text-6xl font-bold text-teal-700">100</span>
+                        <span id="finalMedalBadge" class="mt-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-xs">Medali Emas</span>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto">
+                        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/15">
+                            <div class="text-2xl font-game font-bold text-emerald-300" id="statCorrect">0</div>
+                            <div class="text-xs text-teal-100">Jawaban Benar</div>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/15">
+                            <div class="text-2xl font-game font-bold text-rose-300" id="statWrong">0</div>
+                            <div class="text-xs text-teal-100">Jawaban Salah</div>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/15">
+                            <div class="text-2xl font-game font-bold text-amber-300" id="statBestStreak">0</div>
+                            <div class="text-xs text-teal-100">Beruntun Terbaik</div>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/15">
+                            <div class="text-2xl font-game font-bold text-sky-200" id="statDuration">00:00</div>
+                            <div class="text-xs text-teal-100">Waktu Pengerjaan</div>
+                        </div>
+                    </div>
+
+                    <!-- Spreadsheet Sync Status Banner -->
+                    <div id="sheetSyncStatusBox" class="mt-5 max-w-xl mx-auto px-4 py-2.5 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        <span>Menyimpan hasil pengerjaan ke Rekap Spreadsheet...</span>
+                    </div>
+                </div>
+
+                <!-- Action & Review Section -->
+                <div class="p-6 sm:p-8 space-y-6">
+                    <div class="flex flex-wrap justify-center gap-3">
+                        <button onclick="restartSameMode()" class="btn-3d btn-orange px-6 py-3 rounded-xl text-white font-game font-bold text-base flex items-center gap-2">
+                            <i class="fa-solid fa-rotate-right"></i> Main Lagi
+                        </button>
+                        <button id="retrySyncBtn" onclick="manualResendToSheet()" class="hidden px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm items-center gap-2 transition shadow-sm">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Kirim Ulang ke Spreadsheet
+                        </button>
+                        <button onclick="openLeaderboardModal()" class="px-5 py-3 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 font-bold text-sm flex items-center gap-2 transition">
+                            <i class="fa-solid fa-table-list"></i> Lihat Rekap & Unduh CSV
+                        </button>
+                        <button onclick="returnToMenu()" class="px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm flex items-center gap-2 transition">
+                            <i class="fa-solid fa-house"></i> Menu Utama
+                        </button>
+                    </div>
+
+                    <!-- Complete Review List of All Questions -->
+                    <div class="space-y-3">
+                        <h3 class="font-game text-xl font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-book-open-reader text-teal-600"></i> Rangkuman Jawaban & Pembahasan Lengkap
+                        </h3>
+                        <div id="reviewListContainer" class="space-y-3 max-h-[500px] overflow-y-auto pr-1 custom-scrollbar">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Question Map Modal -->
+    <div id="questionMapModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border-2 border-slate-200 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-game text-xl font-bold text-slate-800">Peta Navigasi Soal</h3>
+                <button onclick="closeQuestionMap()" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="flex gap-4 text-xs font-semibold text-slate-600">
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Benar</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span> Salah</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-slate-200 inline-block"></span> Belum Dijawab</span>
+            </div>
+            <div id="mapGridContainer" class="grid grid-cols-5 gap-2.5"></div>
+            <div class="pt-3 border-t flex justify-between items-center">
+                <button onclick="closeQuestionMap()" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs">Tutup</button>
+                <button onclick="finishQuizNow()" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs">Selesaikan & Lihat Skor</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 2: REKAP NILAI & LEADERBOARD ================= -->
+    <div id="leaderboardModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-4xl w-full p-6 shadow-2xl border-2 border-slate-200 space-y-4 max-h-[90vh] flex flex-col">
+            <div class="flex flex-wrap justify-between items-center gap-2 border-b pb-3">
+                <div>
+                    <h3 class="font-game text-xl font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-ranking-star text-amber-500"></i> Rekap Hasil Pengerjaan Siswa
+                    </h3>
+                    <p class="text-xs text-slate-500">Data tersimpan otomatis ke Google Spreadsheet & memori sesi aplikasi</p>
+                </div>
+                <button onclick="closeLeaderboardModal()" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Action Toolbar -->
+            <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                <div class="text-xs font-semibold text-slate-600 flex items-center gap-2">
+                    <span id="sheetConnectionIndicator" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-bold">
+                        <i class="fa-solid fa-plug-circle-exclamation"></i> URL Spreadsheet Belum Diatur
+                    </span>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="fetchCloudRecap()" class="px-3 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-arrows-rotate"></i> Muat dari Spreadsheet
+                    </button>
+                    <button onclick="exportRecapToCSV()" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-file-csv"></i> Unduh Excel / CSV
+                    </button>
+                    <button onclick="openTeacherModal()" class="px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-gear"></i> Atur Spreadsheet
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="overflow-auto flex-grow custom-scrollbar border border-slate-200 rounded-2xl">
+                <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                    <thead class="bg-slate-800 text-white sticky top-0">
+                        <tr>
+                            <th class="p-3 font-bold">#</th>
+                            <th class="p-3 font-bold">Waktu</th>
+                            <th class="p-3 font-bold">Nama Siswa</th>
+                            <th class="p-3 font-bold">Absen</th>
+                            <th class="p-3 font-bold">Kelas</th>
+                            <th class="p-3 font-bold">Paket Soal</th>
+                            <th class="p-3 font-bold text-center">Benar/Salah</th>
+                            <th class="p-3 font-bold text-center">Durasi</th>
+                            <th class="p-3 font-bold text-center">Skor</th>
+                            <th class="p-3 font-bold text-center">Status Cloud</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recapTableBody" class="divide-y divide-slate-200 bg-white">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pt-2 border-t flex justify-end">
+                <button onclick="closeLeaderboardModal()" class="px-5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 3: PENGATURAN SPREADSHEET & GITHUB (GURU) ================= -->
+    <div id="teacherModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-3xl w-full p-6 shadow-2xl border-2 border-slate-200 space-y-4 max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center border-b pb-3">
+                <div>
+                    <h3 class="font-game text-xl font-bold text-teal-900 flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up text-teal-600"></i> Integrasi Google Spreadsheet & GitHub Pages
+                    </h3>
+                    <p class="text-xs text-slate-500">Hubungkan game ini dengan Google Spreadsheet sekolah agar nilai siswa terekap otomatis</p>
+                </div>
+                <button onclick="closeTeacherModal()" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="overflow-y-auto space-y-5 pr-1 custom-scrollbar text-xs sm:text-sm text-slate-700">
+                <!-- Step 1: Input Web App URL -->
+                <div class="bg-teal-50/70 border-2 border-teal-200 rounded-2xl p-4 space-y-3">
+                    <label class="block font-bold text-teal-950">
+                        1. URL Google Apps Script Web App (`exec`)
+                    </label>
+                    <p class="text-xs text-slate-600">
+                        Masukkan URL Web App Google Apps Script Anda di bawah ini, atau tempelkan langsung pada variabel <code>DEFAULT_SCRIPT_URL</code> di dalam kode sumber sebelum di-upload ke GitHub.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input id="scriptUrlInput" type="url" placeholder="https://script.google.com/macros/s/AKfycb.../exec"
+                            class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-teal-600 focus:outline-none font-mono text-xs bg-white">
+                        <button onclick="saveScriptUrl()" class="px-4 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs whitespace-nowrap transition">
+                            <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan URL
+                        </button>
+                        <button onclick="testScriptConnection()" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs whitespace-nowrap transition">
+                            <i class="fa-solid fa-paper-plane mr-1"></i> Tes Kirim Data
+                        </button>
+                    </div>
+                    <div id="scriptUrlSaveFeedback" class="hidden text-xs font-bold text-emerald-700"></div>
+                </div>
+
+                <!-- Step 2: Copyable Google Apps Script Code -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2.5">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <span class="font-bold text-slate-800">
+                            2. Kode Google Apps Script (Salin & Tempel di Google Spreadsheet)
+                        </span>
+                        <button onclick="copyAppsScriptCode()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs flex items-center gap-1.5 transition">
+                            <i class="fa-regular fa-copy"></i> <span id="copyBtnText">Salin Kode Apps Script</span>
+                        </button>
+                    </div>
+                    <ol class="list-decimal list-inside text-xs text-slate-600 space-y-1">
+                        <li>Buka <strong>Google Spreadsheet</strong> baru, klik menu <strong>Ekstensi (Extensions) &rarr; Apps Script</strong>.</li>
+                        <li>Hapus kode yang ada, lalu tempelkan kode di bawah ini dan klik ikon <strong>Simpan (Save)</strong>.</li>
+                        <li>Klik <strong>Terapkan (Deploy) &rarr; Deployment baru (New deployment)</strong>, pilih jenis <strong>Aplikasi Web (Web app)</strong>.</li>
+                        <li>Pada bagian <em>Siapa yang memiliki akses (Who has access)</em> pilih <strong>Siapa saja (Anyone)</strong>, lalu klik <strong>Terapkan (Deploy)</strong> dan salin URL Web App-nya.</li>
+                    </ol>
+                    <textarea id="appsScriptCodeArea" readonly rows="8" class="w-full p-3 rounded-xl bg-slate-900 text-emerald-300 font-mono text-[11px] focus:outline-none">function doPost(e) {
+  var lock = LockService.getScriptLock();
+  lock.tryLock(10000);
+  try {
+    var doc = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = doc.getSheetByName('RekapNilai') || doc.insertSheet('RekapNilai');
+    if (sheet.getLastRow() === 0) {
+      var headers = ['Waktu Submit', 'Nama Siswa', 'No Absen', 'Kelas', 'Paket Soal', 'Skor Akhir', 'Benar', 'Salah', 'Streak Terbaik', 'Durasi', 'Detail Jawaban (1-25)'];
+      sheet.appendRow(headers);
+      sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold').setBackground('#006778').setFontColor('#ffffff');
+    }
+    var data = JSON.parse(e.postData.contents);
+    sheet.appendRow([
+      new Date(),
+      data.nama || '-',
+      data.absen || '-',
+      data.kelas || '-',
+      data.paket || '-',
+      data.skor || 0,
+      data.benar || 0,
+      data.salah || 0,
+      data.streak || 0,
+      data.durasi || '-',
+      data.detailJawaban || '-'
+    ]);
+    return ContentService.createTextOutput(JSON.stringify({ status: 'success' })).setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: err.toString() })).setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function doGet(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('RekapNilai');
+  if (!sheet || sheet.getLastRow() <= 1) {
+    return ContentService.createTextOutput(JSON.stringify({ status: 'success', data: [] })).setMimeType(ContentService.MimeType.JSON);
+  }
+  var rows = sheet.getDataRange().getValues();
+  var result = [];
+  for (var i = 1; i < rows.length; i++) {
+    result.push({
+      waktu: rows[i][0], nama: rows[i][1], absen: rows[i][2], kelas: rows[i][3],
+      paket: rows[i][4], skor: rows[i][5], benar: rows[i][6], salah: rows[i][7],
+      streak: rows[i][8], durasi: rows[i][9]
+    });
+  }
+  return ContentService.createTextOutput(JSON.stringify({ status: 'success', data: result })).setMimeType(ContentService.MimeType.JSON);
+}</textarea>
+                </div>
+
+                <!-- Step 3: GitHub Pages Instructions -->
+                <div class="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 space-y-1.5">
+                    <div class="font-bold text-amber-950 flex items-center gap-1.5">
+                        <i class="fa-brands fa-github text-base"></i> 3. Cara Memasang di GitHub Pages:
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed">
+                        1. Simpan file ini dengan nama <code>index.html</code> (agar langsung terbuka saat tautan GitHub diakses).<br>
+                        2. Agar siswa di perangkat mana pun langsung terhubung ke Spreadsheet Anda tanpa perlu mengatur URL, masukkan URL Web App Anda pada baris <code>const DEFAULT_SCRIPT_URL = "URL_ANDA_DI_SINI";</code> di dalam kode.<br>
+                        3. Upload <code>index.html</code> ke repository GitHub Anda, lalu aktifkan menu <strong>Settings &rarr; Pages &rarr; Branch: main / root</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="pt-2 border-t flex justify-end">
+                <button onclick="closeTeacherModal()" class="px-5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">Selesai & Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white/80 border-t border-slate-200 py-4 px-4 text-center text-xs text-slate-500 mt-auto">
+        <div class="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div>
+                <strong>MUGEB Primary School</strong> (SD Muhammadiyah GKB Gresik)
+            </div>
+            <div>
+                Materi diadaptasi dari <em>Tantangan Bebras Indonesia 2020 - Kategori Siaga</em> (CC BY-NC-SA 4.0)
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ==================== WEB AUDIO SOUND SYNTHESIZER ====================
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) audioCtx = new AudioContext();
+            }
+        }
+
+        function playTone(type) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const now = audioCtx.currentTime;
+                if (type === 'correct') {
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+                        gain.gain.setValueAtTime(0.15, now + idx * 0.07);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.25);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + idx * 0.07);
+                        osc.stop(now + idx * 0.07 + 0.25);
+                    });
+                } else if (type === 'wrong') {
+                    [300, 240].forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+                        gain.gain.setValueAtTime(0.12, now + idx * 0.12);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.22);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + idx * 0.12);
+                        osc.stop(now + idx * 0.12 + 0.22);
+                    });
+                } else if (type === 'click') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, now);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.06);
+                }
+            } catch (e) {
+                console.warn('Audio error:', e);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            icon.className = soundEnabled ? 'fa-solid fa-volume-high text-teal-700' : 'fa-solid fa-volume-xmark text-slate-400';
+            if (soundEnabled) playTone('click');
+        }
+
+        // ==================== COMPLETE 25 QUESTIONS DATABASE ====================
+        // Questions 1 - 15: Original 15 Questions from Bebras Indonesia 2020 (Siaga SD)
+        // Questions 16 - 25: 10 Developed Questions with matching Computational Thinking concepts
+        const ALL_QUESTIONS = [
+            // 1. Manik-manik (Original)
+            {
+                id: 1,
+                type: 'ORIGINAL',
+                code: '2020-BE-03 (Asli #1)',
+                flag: '🇧🇪',
+                title: 'Manik-manik',
+                category: 'Algoritma & Pola',
+                story: `Mariam ingin membuat sebuah gelang dari manik-manik bintang (⭐) dan bulan (🌙). Ia memberikan petunjuk pembuatan ke Joni:<br>
+                1. Ambil 1 manik-manik bintang (⭐) dan 1 manik-manik bulan (🌙), lalu hubungkan keduanya.<br>
+                2. Ulangi langkah sebelumnya 2 kali lagi (sehingga ada 3 pasang bintang-bulan).<br>
+                3. Ambil 3 bagian yang sudah dibuat dan hubungkan menjadi satu rantai.<br>
+                4. Tambahkan 2 bintang lagi (⭐⭐) pada ujung rantai dan hubungkan membentuk lingkaran gelang.`,
+                visual: `<div class="flex flex-col items-center gap-2 text-center">
+                    <div class="text-xs font-bold text-slate-500">Contoh Gelang Mariam (5 ⭐ dan 3 🌙):</div>
+                    <div class="flex items-center gap-2 bg-white px-5 py-3 rounded-2xl border shadow-sm text-2xl">
+                        <span>⭐</span><span>🌙</span><span>⭐</span><span>🌙</span><span>⭐</span><span>⭐</span><span>🌙</span><span>⭐</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500">Catatan: Saat Joni merangkai pasangan ⭐-🌙, posisinya bisa terbalik menjadi 🌙-⭐.</div>
+                </div>`,
+                challenge: 'Tiga dari empat gelang di bawah ini mengikuti petunjuk Mariam. Gelang mana yang TIDAK DAPAT diperoleh dengan mengikuti petunjuk tersebut?',
+                options: [
+                    'A. Gelang dengan urutan melingkar: ⭐ - 🌙 - ⭐ - ⭐ - ⭐ - 🌙 - 🌙 - ⭐',
+                    'B. Gelang dengan urutan melingkar: ⭐ - ⭐ - ⭐ - 🌙 - 🌙 - ⭐ - 🌙 - ⭐',
+                    'C. Gelang dengan urutan melingkar: ⭐ - ⭐ - ⭐ - ⭐ - 🌙 - 🌙 - 🌙 - ⭐',
+                    'D. Gelang dengan urutan melingkar: ⭐ - 🌙 - ⭐ - 🌙 - ⭐ - 🌙 - ⭐ - ⭐'
+                ],
+                correct: 2,
+                explanation: `Setiap manik-manik bulan (🌙) berasal dari pasangan (⭐-🌙), sehingga setiap bulan HARUS bersebelahan langsung dengan setidaknya satu bintang (⭐). Tidak mungkin ada 3 buah manik-manik bulan berurutan (🌙-🌙-🌙) karena bulan yang di tengah hanya akan diapit oleh bulan dan bulan. Gelang <strong>C</strong> memiliki 3 bulan berurutan sehingga tidak mungkin terbentuk.`
+            },
+
+            // 2. Pencakar Langit (Original)
+            {
+                id: 2,
+                type: 'ORIGINAL',
+                code: '2020-CA-01 (Asli #2)',
+                flag: '🇨🇦',
+                title: 'Pencakar Langit',
+                category: 'Pengurutan (Sorting)',
+                story: `Sebuah foto menunjukkan barisan 14 menara dari kiri ke kanan. Menara-menara tersebut tampak membentuk dua barisan tangga yang semakin meninggi:<br>
+                • <strong>Kelompok Kiri (7 menara):</strong> Menara 1 (40m), Menara 2 (55m), Menara 3 (75m), Menara 4 (90m), <strong>Menara D (110m)</strong>, <strong>Menara C (145m)</strong>, Menara 7 (185m).<br>
+                • <strong>Kelompok Kanan (7 menara):</strong> Menara 8 (50m), Menara 9 (65m), Menara 10 (95m), <strong>Menara A (105m)</strong>, <strong>Menara B (120m)</strong>, Menara 13 (140m), Menara 14 (155m).`,
+                visual: `<svg viewBox="0 0 560 150" class="w-full max-w-xl h-36 bg-sky-50 rounded-xl border border-sky-200 p-2">
+                    <!-- 14 Towers -->
+                    <g fill="#64748b">
+                        <rect x="15" y="100" width="20" height="40" rx="2"/><text x="25" y="95" font-size="9" text-anchor="middle">1</text>
+                        <rect x="50" y="88" width="20" height="52" rx="2"/><text x="60" y="83" font-size="9" text-anchor="middle">2</text>
+                        <rect x="85" y="75" width="20" height="65" rx="2"/><text x="95" y="70" font-size="9" text-anchor="middle">3</text>
+                        <rect x="120" y="64" width="20" height="76" rx="2"/><text x="130" y="59" font-size="9" text-anchor="middle">4</text>
+                        <rect x="155" y="50" width="24" height="90" rx="2" fill="#d97706"/><text x="167" y="45" font-size="11" font-weight="bold" fill="#b45309" text-anchor="middle">D</text>
+                        <rect x="195" y="25" width="26" height="115" rx="2" fill="#0284c7"/><text x="208" y="20" font-size="11" font-weight="bold" fill="#0369a1" text-anchor="middle">C</text>
+                        <rect x="235" y="8" width="20" height="132" rx="2" fill="#475569"/><text x="245" y="22" font-size="9" fill="#fff" text-anchor="middle">7</text>
+
+                        <rect x="280" y="94" width="20" height="46" rx="2"/><text x="290" y="89" font-size="9" text-anchor="middle">8</text>
+                        <rect x="315" y="82" width="20" height="58" rx="2"/><text x="325" y="77" font-size="9" text-anchor="middle">9</text>
+                        <rect x="350" y="60" width="20" height="80" rx="2"/><text x="360" y="55" font-size="9" text-anchor="middle">10</text>
+                        <rect x="385" y="54" width="24" height="86" rx="2" fill="#0d9488"/><text x="397" y="49" font-size="11" font-weight="bold" fill="#0f766e" text-anchor="middle">A</text>
+                        <rect x="425" y="40" width="26" height="100" rx="2" fill="#1e293b"/><text x="438" y="35" font-size="11" font-weight="bold" fill="#0f172a" text-anchor="middle">B</text>
+                        <rect x="465" y="28" width="20" height="112" rx="2"/><text x="475" y="23" font-size="9" text-anchor="middle">13</text>
+                        <rect x="500" y="18" width="20" height="122" rx="2"/><text x="510" y="14" font-size="9" text-anchor="middle">14</text>
+                    </g>
+                    <rect x="5" y="140" width="545" height="6" fill="#16a34a" rx="3"/>
+                </svg>`,
+                challenge: 'Jika ke-14 menara tersebut diurutkan dari yang PALING RENDAH ke yang PALING TINGGI, menara mana yang berada pada urutan ke-10?',
+                options: [
+                    'A. Menara A (Menara putih berpuncak hitam)',
+                    'B. Menara B (Menara hitam berpuncak bundar)',
+                    'C. Menara C (Menara kaca bergelombang)',
+                    'D. Menara D (Menara jam berbendera)'
+                ],
+                correct: 1,
+                explanation: `Urutan ke-10 dari yang terendah berarti ada <strong>9 menara yang lebih rendah</strong> dan <strong>4 menara yang lebih tinggi</strong> darinya. Empat menara tertinggi secara keseluruhan adalah dua menara paling kanan di kelompok pertama (Menara C dan Menara 7) serta dua menara paling kanan di kelompok kedua (Menara 13 dan Menara 14). Menara tertinggi berikutnya tepat di bawah ke-4 menara tersebut adalah <strong>Menara B</strong>.`
+            },
+
+            // 3. Beruang yang Mana? (Original)
+            {
+                id: 3,
+                type: 'ORIGINAL',
+                code: '2020-CA-06 (Asli #3)',
+                flag: '🇨🇦',
+                title: 'Beruang yang Mana?',
+                category: 'Logika Boolean',
+                story: `Rena boleh membawa satu beruang mainannya ke sekolah. Rena memilih sebuah beruang dengan syarat:<br>
+                • Mempunyai <strong>bintang (⭐) di kakinya</strong>,<br>
+                • Memakai <strong>selendang di lehernya ATAU berpita</strong>,<br>
+                • Tetapi <strong>TIDAK memakai kacamata (👓)</strong>.`,
+                visual: `<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-xl text-center text-xs">
+                    <div class="bg-white p-3 rounded-xl border shadow-sm">
+                        <div class="text-3xl mb-1">🧸</div>
+                        <div class="font-bold text-teal-800">Beruang A</div>
+                        <div class="text-slate-600 mt-1">👓 Berkacamata<br>🧣 Selendang Merah<br>⭐ Bintang di Kaki</div>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border shadow-sm">
+                        <div class="text-3xl mb-1">🧸</div>
+                        <div class="font-bold text-teal-800">Beruang B</div>
+                        <div class="text-slate-600 mt-1">❌ Tanpa Kacamata<br>❌ Polos (Tanpa Pita/Selendang)<br>⭐ Bintang di Kaki</div>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border shadow-sm">
+                        <div class="text-3xl mb-1">🧸</div>
+                        <div class="font-bold text-teal-800">Beruang C</div>
+                        <div class="text-slate-600 mt-1">👓 Berkacamata<br>🎀 Pita & 🧣 Selendang<br>⭐ Bintang di Kaki</div>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border shadow-sm">
+                        <div class="text-3xl mb-1">🧸</div>
+                        <div class="font-bold text-teal-800">Beruang D</div>
+                        <div class="text-slate-600 mt-1">❌ Tanpa Kacamata<br>🧣 Selendang Merah<br>⭐ Bintang di Kaki</div>
+                    </div>
+                </div>`,
+                challenge: 'Beruang yang mana yang akan dibawa Rena ke sekolah?',
+                options: [
+                    'A. Beruang A (Berkacamata, memakai selendang merah, ada bintang di kaki)',
+                    'B. Beruang B (Tidak berkacamata, polos tanpa selendang/pita, ada bintang di kaki)',
+                    'C. Beruang C (Berkacamata, memakai pita hijau & selendang merah, ada bintang di kaki)',
+                    'D. Beruang D (Tidak berkacamata, memakai selendang merah, ada bintang di kaki)'
+                ],
+                correct: 3,
+                explanation: `Rena tidak memilih A atau C karena memakai kacamata. Rena tidak memilih B karena tidak memakai selendang maupun pita. Rena memilih <strong>D</strong> karena memiliki bintang di kakinya, memakai selendang (memenuhi syarat "selendang ATAU pita"), dan tidak berkacamata.`
+            },
+
+            // 4. Tumpukan Mangkok (Original)
+            {
+                id: 4,
+                type: 'ORIGINAL',
+                code: '2020-IE-09 (Asli #4)',
+                flag: '🇮🇪',
+                title: 'Tumpukan Mangkok',
+                category: 'Struktur Data Stack',
+                story: `Tiga bersaudara ingin makan bubur dengan mangkuk yang corak dan warnanya sama persis. Mangkuk yang dapat diambil hanya mangkuk yang <strong>paling atas</strong> satu per satu.<br>
+                Urutan tumpukan 15 mangkuk dari <strong>ATAS ke BAWAH</strong> adalah:<br>
+                1. Oranye Polos | 2. Biru Muda Polos | 3. Biru Muda Polos | 4. Ungu Bintang | 5. Oranye Polos | 6. Biru Tua Titik | 7. Kuning Spiral | 8. Hijau Titik | 9. Kuning Spiral | 10. Hijau Titik | 11. Biru Tua Titik | 12. Ungu Bintang | 13. Oranye Polos | 14. Kuning Spiral | 15. Hijau Titik`,
+                visual: `<div class="flex flex-wrap justify-center gap-1.5 max-w-lg">
+                    <span class="px-2.5 py-1 rounded-lg bg-orange-500 text-white text-xs font-bold">1. Oranye</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-sky-400 text-white text-xs font-bold">2. Biru Muda</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-sky-400 text-white text-xs font-bold">3. Biru Muda</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-purple-500 text-white text-xs font-bold">4. Ungu ★</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-orange-500 text-white text-xs font-bold">5. Oranye</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-blue-700 text-white text-xs font-bold">6. Biru ●</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-yellow-400 text-slate-900 text-xs font-bold">7. Kuning</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-xs font-bold">8. Hijau</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-yellow-400 text-slate-900 text-xs font-bold">9. Kuning</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-xs font-bold">10. Hijau</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-blue-700 text-white text-xs font-bold">11. Biru ●</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-purple-500 text-white text-xs font-bold">12. Ungu ★</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-orange-500 text-white text-xs font-bold ring-2 ring-orange-300">13. Oranye (Ke-3!)</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-yellow-400 text-slate-900 text-xs font-bold">14. Kuning</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-xs font-bold">15. Hijau</span>
+                </div>`,
+                challenge: 'Berapa mangkuk PALING SEDIKIT yang harus diambil dari atas untuk mendapatkan 3 mangkuk yang sama?',
+                options: [
+                    'A. 13 mangkuk',
+                    'B. 14 mangkuk',
+                    'C. 15 mangkuk',
+                    'D. 16 mangkuk'
+                ],
+                correct: 0,
+                explanation: `Mari kita hitung kemunculan mangkuk ke-3 yang sejenis saat diambil dari atas: Mangkuk Oranye muncul di urutan ke-1, ke-5, dan ke-13. Sebelum urutan ke-13, setiap jenis mangkuk lainnya baru terkumpul maksimal 2 buah. Jadi setidaknya <strong>13 mangkuk</strong> harus diambil untuk mendapatkan 3 mangkuk Oranye yang sama.`
+            },
+
+            // 5. Memotret Beruang (Original)
+            {
+                id: 5,
+                type: 'ORIGINAL',
+                code: '2020-IS-02 (Asli #5)',
+                flag: '🇮🇸',
+                title: 'Memotret Beruang',
+                category: 'Graf & Penelusuran Jalur',
+                story: `Bebe si berang-berang berjalan dari rumah <strong>"TEDDY BEAR"</strong>, menelusuri jalan-jalan desa tanpa berbalik arah di jalan yang sama sampai kembali lagi ke rumah "TEDDY BEAR".<br>
+                Sepanjang perjalanan, Bebe melewati tepat <strong>4 rumah beruang</strong>. Ia memotret 3 beruang (Beruang Coklat Ransel, Beruang Bergaun Ungu, dan Beruang Oranye), tetapi lupa memotret 1 beruang lainnya.`,
+                visual: `<svg viewBox="0 0 420 200" class="w-full max-w-md h-44 bg-white rounded-xl border p-2">
+                    <!-- Graph Edges -->
+                    <path d="M60 50 Q130 60 190 35" stroke="#ef4444" stroke-width="3" fill="none"/>
+                    <path d="M190 35 Q270 55 350 50" stroke="#ef4444" stroke-width="3" fill="none"/>
+                    <path d="M350 50 Q270 85 190 100" stroke="#ef4444" stroke-width="3" fill="none"/>
+                    <path d="M190 100 Q130 135 80 125" stroke="#ef4444" stroke-width="3" fill="none"/>
+                    <path d="M80 125 Q40 85 60 50" stroke="#ef4444" stroke-width="3" fill="none"/>
+                    <!-- Other black paths -->
+                    <path d="M60 50 Q120 90 190 100" stroke="#334155" stroke-width="2.5" fill="none"/>
+                    <path d="M80 125 Q130 175 200 170" stroke="#334155" stroke-width="2.5" fill="none"/>
+                    <path d="M200 170 Q240 130 290 115" stroke="#334155" stroke-width="2.5" fill="none"/>
+                    <path d="M290 115 Q330 90 350 50" stroke="#334155" stroke-width="2.5" fill="none"/>
+                    <path d="M200 170 L350 165" stroke="#334155" stroke-width="2.5" fill="none"/>
+                    <path d="M350 50 Q385 110 350 165" stroke="#334155" stroke-width="2.5" fill="none"/>
+                    <!-- Nodes -->
+                    <g font-size="10" font-weight="bold" text-anchor="middle">
+                        <rect x="20" y="30" width="75" height="30" rx="6" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+                        <text x="57" y="49">🏠 TEDDY</text>
+
+                        <rect x="150" y="18" width="85" height="28" rx="6" fill="#fecdd3" stroke="#e11d48" stroke-width="2"/>
+                        <text x="192" y="36">🧸 C (Dasi Merah)</text>
+
+                        <rect x="310" y="35" width="80" height="28" rx="6" fill="#fed7aa" stroke="#ea580c"/>
+                        <text x="350" y="53">🧸 Oranye</text>
+
+                        <rect x="150" y="86" width="85" height="28" rx="6" fill="#f5d0fe" stroke="#c026d3"/>
+                        <text x="192" y="104">🧸 Gaun Ungu</text>
+
+                        <rect x="40" y="112" width="80" height="28" rx="6" fill="#fde68a" stroke="#d97706"/>
+                        <text x="80" y="130">🧸 Ransel</text>
+
+                        <rect x="255" y="102" width="75" height="26" rx="6" fill="#fef9c3" stroke="#eab308"/>
+                        <text x="292" y="119">🧸 B (Kuning)</text>
+
+                        <rect x="165" y="155" width="75" height="26" rx="6" fill="#fce7f3" stroke="#db2777"/>
+                        <text x="202" y="172">🧸 A (Pink)</text>
+
+                        <rect x="312" y="152" width="75" height="26" rx="6" fill="#e0f2fe" stroke="#0284c7"/>
+                        <text x="350" y="169">🧸 D (Dasi Biru)</text>
+                    </g>
+                </svg>`,
+                challenge: 'Beruang yang mana yang terlupa difoto oleh Bebe?',
+                options: [
+                    'A. Beruang Pink Duduk (di bagian bawah tengah)',
+                    'B. Beruang Kuning Berdasi Biru (di bagian tengah kanan)',
+                    'C. Beruang Coklat Muda Berdasi Merah (di bagian paling atas tengah)',
+                    'D. Beruang Coklat Muda Berdasi Biru (di bagian pojok kanan bawah)'
+                ],
+                correct: 2,
+                explanation: `Satu-satunya rute melingkar dari rumah TEDDY BEAR yang melewati tepat 4 rumah beruang (termasuk Beruang Ransel, Gaun Ungu, dan Oranye) adalah rute atas yang melewati <strong>Beruang C (Beruang Coklat Muda Berdasi Kupu-kupu Merah di atas)</strong>.`
+            },
+
+            // 6. Rel Kereta Api (Original)
+            {
+                id: 6,
+                type: 'ORIGINAL',
+                code: '2020-PT-06 (Asli #6)',
+                flag: '🇵🇹',
+                title: 'Rel Kereta Api',
+                category: 'Perencanaan Jalur',
+                story: `Sebuah kereta api masuk dari sebelah <strong>Kiri</strong> menuju ke stasiun di pojok <strong>Kanan Atas</strong>. Pada peta rel, terdapat dua petak kosong bernomor <strong>(1)</strong> dan <strong>(2)</strong>:<br>
+                • Di petak <strong>(1)</strong>: Rel lurus ke kanan buntu (ada palang merah 🛑). Di atas petak (1) ada jalur melengkung yang mengarah ke atas lalu memutar ke bawah menuju atas petak (2), dan di bawah petak (1) ada jalur melengkung menuju kiri petak (2).<br>
+                • Di petak <strong>(2)</strong>: Jalur datang dari <strong>Atas</strong> (atau dari Kiri), dan jalur keluar menuju stasiun ada di sebelah <strong>Kanan</strong> petak (2).`,
+                visual: `<div class="bg-white p-3 rounded-xl border text-xs sm:text-sm max-w-lg space-y-2">
+                    <div class="flex items-center justify-center gap-2 font-bold text-teal-800">
+                        <span>🚂 Masuk Kiri</span> ➔ <span class="px-2 py-1 bg-sky-100 rounded border border-sky-400">Petak (1)</span> ➔ <span>Jalur Atas</span> ➔ <span class="px-2 py-1 bg-sky-100 rounded border border-sky-400">Petak (2)</span> ➔ <span>🚉 Stasiun</span>
+                    </div>
+                    <p class="text-slate-600 text-center text-xs">Petak (1) harus membelokkan kereta dari KIRI ke ATAS (atau BAWAH). Petak (2) harus menyambungkan jalur dari ATAS ke KANAN menuju stasiun.</p>
+                </div>`,
+                challenge: 'Pilih pasangan potongan rel (1) dan (2) yang paling sesuai agar kereta api sampai dengan selamat di stasiun!',
+                options: [
+                    'A. (1) Belok Kiri-ke-Bawah  &  (2) Belok Kiri-ke-Atas',
+                    'B. (1) Belok Kiri-ke-Bawah  &  (2) Belok Atas-ke-Kanan',
+                    'C. (1) Belok Kiri-ke-Atas   &  (2) Rel Lurus Mendatar Kiri-ke-Kanan',
+                    'D. (1) Belok Kiri-ke-Atas   &  (2) Belok Atas-ke-Kanan'
+                ],
+                correct: 3,
+                explanation: `Dengan memilih <strong>D</strong>: Di petak (1), kereta dari Kiri dibelokkan ke Atas mengikuti jalur melengkung atas lalu turun masuk ke bagian Atas petak (2). Di petak (2), rel lengkung Atas-ke-Kanan mengarahkan kereta langsung menuju jalur stasiun dengan selamat.`
+            },
+
+            // 7. Sprinkler (Original)
+            {
+                id: 7,
+                type: 'ORIGINAL',
+                code: '2020-SK-03 (Asli #7)',
+                flag: '🇸🇰',
+                title: 'Sprinkler (Penyiram Tanaman)',
+                category: 'Optimasi Spasial',
+                story: `Bob si berang-berang menanam 5 kelompok bunga (🌸) di taman berukuran 4 baris × 5 kolom. Posisi kelima bunga tersebut adalah:<br>
+                • Bunga 1: Baris 1, Kolom 3<br>
+                • Bunga 2: Baris 2, Kolom 1<br>
+                • Bunga 3: Baris 2, Kolom 5<br>
+                • Bunga 4: Baris 3, Kolom 2<br>
+                • Bunga 5: Baris 4, Kolom 3<br>
+                Setiap alat penyiram (💧) ditempatkan di petak kosong dan menyirami 8 kotak tetangga di sekelilingnya (atas, bawah, kiri, kanan, dan 4 diagonal).`,
+                visual: `<div class="grid grid-cols-5 gap-1.5 bg-emerald-100 p-3 rounded-xl border border-emerald-300 w-64 text-center font-bold text-lg">
+                    <div class="bg-white h-10 flex items-center justify-center rounded"></div>
+                    <div class="bg-white h-10 flex items-center justify-center rounded"></div>
+                    <div class="bg-emerald-200 h-10 flex items-center justify-center rounded">🌸</div>
+                    <div class="bg-white h-10 flex items-center justify-center rounded"></div>
+                    <div class="bg-white h-10 flex items-center justify-center rounded"></div>
+
+                    <div class="bg-emerald-200 h-10 flex items-center justify-center rounded">🌸</div>
+                    <div class="bg-sky-100 h-10 flex items-center justify-center rounded border-2 border-sky-400 text-xs text-sky-700">💧?</div>
+                    <div class="bg-white h-10 flex items-center justify-center rounded"></div>
+                    <div class="bg-white h-10 flex items-center justify-center rounded"></div>
+                    <div class="bg-emerald-200 h-10 flex items-center justify-center rounded">🌸</div>
+
+                    <div class="bg-white h-10 flex items-center justify-center rounded"></div>
+                    <div class="bg-emerald-200 h-10 flex items-center justify-center rounded">🌸</div>
+                    <div class="bg-white h-10 flex items-center justify-center rounded"></div>
+                    <div class="bg-sky-100 h-10 flex items-center justify-center rounded border-2 border-sky-400 text-xs text-sky-700">💧?</div>
+                    <div class="bg-white h-10 flex items-center justify-center rounded"></div>
+
+                    <div class="bg-white h-10 flex items-center justify-center rounded"></div>
+                    <div class="bg-white h-10 flex items-center justify-center rounded"></div>
+                    <div class="bg-emerald-200 h-10 flex items-center justify-center rounded">🌸</div>
+                    <div class="bg-white h-10 flex items-center justify-center rounded"></div>
+                    <div class="bg-white h-10 flex items-center justify-center rounded"></div>
+                </div>`,
+                challenge: 'Berapa jumlah MINIMUM penyiram air (sprinkler) yang diperlukan untuk menyirami semua kelompok bunganya?',
+                options: [
+                    'A. 1 penyiram air',
+                    'B. 2 penyiram air',
+                    'C. 3 penyiram air',
+                    'D. 4 penyiram air'
+                ],
+                correct: 1,
+                explanation: `Satu penyiram tidak mungkin menjangkau bunga di Kolom 1 dan Kolom 5 sekaligus karena jaraknya terlalu jauh. Dengan <strong>2 penyiram air</strong>, yaitu di (Baris 2, Kolom 2) untuk menyiram 3 bunga di kiri-atas dan di (Baris 3, Kolom 4) untuk menyiram 2 bunga di kanan-bawah, seluruh 5 kelompok bunga dapat tersiram.`
+            },
+
+            // 8. Papan Kunci (Keyboard) Rahasia (Original)
+            {
+                id: 8,
+                type: 'ORIGINAL',
+                code: '2020-CA-07 (Asli #8)',
+                flag: '🇨🇦',
+                title: 'Papan Kunci (Keyboard) Rahasia',
+                category: 'Kriptografi & Substitusi',
+                story: `Joni mempunyai keyboard komputer khusus untuk menulis pesan rahasia. Setiap tombol yang ditekan akan menampilkan huruf pasangannya sesuai panah dua arah berikut:<br>
+                <strong>Q ↔ W</strong> &nbsp;|&nbsp; <strong>E ↔ S</strong> &nbsp;|&nbsp; <strong>R ↔ F</strong> &nbsp;|&nbsp; <strong>T ↔ Y</strong> &nbsp;|&nbsp; <strong>U ↔ H</strong> &nbsp;|&nbsp; <strong>I ↔ O</strong> &nbsp;|&nbsp; <strong>P ↔ L</strong><br>
+                <strong>A ↔ Z</strong> &nbsp;|&nbsp; <strong>D ↔ X</strong> &nbsp;|&nbsp; <strong>G ↔ B</strong> &nbsp;|&nbsp; <strong>J ↔ K</strong> &nbsp;|&nbsp; <strong>C ↔ V</strong> &nbsp;|&nbsp; <strong>N ↔ M</strong>`,
+                visual: `<div class="bg-slate-800 text-white p-4 rounded-2xl text-center space-y-2 max-w-md w-full">
+                    <div class="text-xs text-slate-300 uppercase tracking-widest">Tampilan di Layar Joni:</div>
+                    <div class="font-mono text-2xl sm:text-3xl font-bold tracking-[0.25em] text-amber-300">NIFMOMB</div>
+                </div>`,
+                challenge: 'Di layar Joni tampil tulisan "NIFMOMB". Pesan apa yang sebenarnya diketikkan oleh Joni?',
+                options: [
+                    'A. MOLDING',
+                    'B. MERMAID',
+                    'C. MORNING',
+                    'D. MICROBE'
+                ],
+                correct: 2,
+                explanation: `Mari kita terjemahkan setiap huruf dari "NIFMOMB" sesuai pasangan panahnya:<br>
+                • <strong>N</strong> ↔ <strong>M</strong><br>
+                • <strong>I</strong> ↔ <strong>O</strong><br>
+                • <strong>F</strong> ↔ <strong>R</strong><br>
+                • <strong>M</strong> ↔ <strong>N</strong><br>
+                • <strong>O</strong> ↔ <strong>I</strong><br>
+                • <strong>M</strong> ↔ <strong>N</strong><br>
+                • <strong>B</strong> ↔ <strong>G</strong><br>
+                Digabungkan menjadi kata: <strong>MORNING</strong> (Pilihan C).`
+            },
+
+            // 9. Binatang Peliharaan Polly (Original)
+            {
+                id: 9,
+                type: 'ORIGINAL',
+                code: '2020-HU-03 (Asli #9)',
+                flag: '🇭🇺',
+                title: 'Binatang Peliharaan Polly',
+                category: 'Logika Proposisi (Hukum De Morgan)',
+                story: `Kevin bertanya ke Polly: <em>"Gummy adalah kucing DAN Puffy adalah anjing, benar kan?"</em><br>
+                Polly menjawab: <strong>"Tidak, itu tidak benar."</strong>`,
+                visual: `<div class="flex items-center gap-4 bg-white px-5 py-3 rounded-2xl border shadow-sm">
+                    <div class="text-3xl">🐱 🐶</div>
+                    <div class="text-xs sm:text-sm font-semibold text-slate-700">
+                        Pernyataan Kevin: (Gummy = Kucing) <strong>DAN</strong> (Puffy = Anjing) ➔ <strong>SALAH</strong>
+                    </div>
+                </div>`,
+                challenge: 'Berdasarkan jawaban Polly, pernyataan mana di bawah ini yang PASTI BENAR?',
+                options: [
+                    'A. Gummy bukan kucing dan Puffy bukan anjing.',
+                    'B. Antara Gummy bukan kucing atau Puffy bukan anjing (hanya salah satu).',
+                    'C. Gummy bukan kucing atau Puffy bukan anjing.',
+                    'D. Gummy bukan kucing, tetapi Puffy adalah anjing.'
+                ],
+                correct: 2,
+                explanation: `Dalam logika informatika (Hukum De Morgan), negasi dari kalimat gabungan <strong>"P dan Q"</strong> adalah <strong>"(Bukan P) ATAU (Bukan Q)"</strong>. Jika pernyataan "Gummy kucing dan Puffy anjing" bernilai salah, maka minimal salah satu (atau keduanya) salah, yang dinyatakan secara tepat dengan kalimat inklusif: <strong>"Gummy bukan kucing atau Puffy bukan anjing" (C)</strong>.`
+            },
+
+            // 10. Berbisik (Original)
+            {
+                id: 10,
+                type: 'ORIGINAL',
+                code: '2020-PK-08 (Asli #10)',
+                flag: '🇵🇰',
+                title: 'Berbisik',
+                category: 'Pengurutan Topologis',
+                story: `Walikota Mayor A perlu membagikan informasi harga balok kayu terkini ke 4 anak buahnya (Bebras B, C, D, dan E) dengan aturan keamanan berikut:<br>
+                1. Bebras <strong>C</strong> harus tahu <strong>SEBELUM</strong> bebras <strong>D</strong>.<br>
+                2. Bebras <strong>B</strong> harus tahu <strong>SETELAH</strong> bebras <strong>C</strong>.<br>
+                3. Bebras <strong>D</strong> harus tahu <strong>SETELAH</strong> bebras <strong>B</strong>.<br>
+                4. Bebras <strong>E</strong> harus tahu <strong>SETELAH</strong> bebras <strong>D</strong>.`,
+                visual: `<div class="flex items-center justify-center gap-3 bg-amber-50 px-5 py-3 rounded-2xl border border-amber-200 text-sm font-bold text-amber-900">
+                    <span>🦫 Mayor A</span> ➔ <span>[ ? ]</span> ➔ <span>[ ? ]</span> ➔ <span>[ ? ]</span> ➔ <span>[ ? ]</span>
+                </div>`,
+                challenge: 'Mana urutan penyampaian informasi dari awal hingga akhir yang TIDAK menyalahi aturan tersebut?',
+                options: [
+                    'A. C, D, E, B',
+                    'B. C, D, B, E',
+                    'C. C, B, D, E',
+                    'D. B, C, D, E'
+                ],
+                correct: 2,
+                explanation: `Mari kita susun urutannya:<br>
+                • C sebelum D ➔ (C ... D)<br>
+                • B setelah C ➔ (C ... B)<br>
+                • D setelah B ➔ (B ... D) sehingga menjadi <strong>C ➔ B ➔ D</strong><br>
+                • E setelah D ➔ <strong>C, B, D, E</strong> (Pilihan C).`
+            },
+
+            // 11. Balok Kayu (Original)
+            {
+                id: 11,
+                type: 'ORIGINAL',
+                code: '2020-LT-10 (Asli #11)',
+                flag: '🇱🇹',
+                title: 'Balok Kayu',
+                category: 'Pengenalan Pola & Rotasi',
+                story: `Sebuah truk kereta memiliki 4 trailer yang membawa tumpukan 4 papan berisi titik-titik balok kayu. Susunan jumlah titik dari <strong>Baris Atas ke Bawah</strong> pada 3 trailer pertama adalah:<br>
+                • <strong>Trailer 1:</strong> Atas = 4, Baris kedua = 1, Baris ketiga = 2, Bawah = 3 &nbsp; <code>[4, 1, 2, 3]</code><br>
+                • <strong>Trailer 2:</strong> Atas = 3, Baris kedua = 4, Baris ketiga = 1, Bawah = 2 &nbsp; <code>[3, 4, 1, 2]</code><br>
+                • <strong>Trailer 3:</strong> Atas = 2, Baris kedua = 3, Baris ketiga = 4, Bawah = 1 &nbsp; <code>[2, 3, 4, 1]</code>`,
+                visual: `<div class="grid grid-cols-4 gap-2 text-center text-xs font-mono font-bold">
+                    <div class="bg-slate-200 p-2.5 rounded-xl border border-slate-400">
+                        <div class="text-slate-600 mb-1">Trailer 1</div>
+                        <div class="bg-white py-0.5 rounded mb-1">●●●● (4)</div>
+                        <div class="bg-white py-0.5 rounded mb-1">● (1)</div>
+                        <div class="bg-white py-0.5 rounded mb-1">●● (2)</div>
+                        <div class="bg-white py-0.5 rounded">●●● (3)</div>
+                    </div>
+                    <div class="bg-slate-200 p-2.5 rounded-xl border border-slate-400">
+                        <div class="text-slate-600 mb-1">Trailer 2</div>
+                        <div class="bg-white py-0.5 rounded mb-1">●●● (3)</div>
+                        <div class="bg-white py-0.5 rounded mb-1">●●●● (4)</div>
+                        <div class="bg-white py-0.5 rounded mb-1">● (1)</div>
+                        <div class="bg-white py-0.5 rounded">●● (2)</div>
+                    </div>
+                    <div class="bg-slate-200 p-2.5 rounded-xl border border-slate-400">
+                        <div class="text-slate-600 mb-1">Trailer 3</div>
+                        <div class="bg-white py-0.5 rounded mb-1">●● (2)</div>
+                        <div class="bg-white py-0.5 rounded mb-1">●●● (3)</div>
+                        <div class="bg-white py-0.5 rounded mb-1">●●●● (4)</div>
+                        <div class="bg-white py-0.5 rounded">● (1)</div>
+                    </div>
+                    <div class="bg-amber-100 p-2.5 rounded-xl border-2 border-amber-500 flex flex-col justify-center">
+                        <div class="text-amber-900 mb-1">Trailer 4</div>
+                        <div class="text-2xl py-4">❓</div>
+                    </div>
+                </div>`,
+                challenge: 'Pilih susunan jumlah titik balok (dari baris atas ke bawah) untuk dimuat ke Trailer 4 agar mengikuti pola tersebut!',
+                options: [
+                    'A. Atas = 3, Kedua = 4, Ketiga = 1, Bawah = 2',
+                    'B. Atas = 1, Kedua = 2, Ketiga = 3, Bawah = 4',
+                    'C. Atas = 4, Kedua = 3, Ketiga = 2, Bawah = 1',
+                    'D. Atas = 2, Kedua = 3, Ketiga = 4, Bawah = 1'
+                ],
+                correct: 1,
+                explanation: `Perhatikan polanya: Setiap berpindah ke trailer berikutnya, setiap baris bergeser <strong>1 tingkat ke bawah</strong>, dan baris paling bawah berpindah ke baris paling atas. Dari Trailer 3 <code>[2, 3, 4, 1]</code>, angka 1 di bawah naik ke paling atas sehingga Trailer 4 menjadi <strong>[1, 2, 3, 4]</strong> (Pilihan B).`
+            },
+
+            // 12. Kota dan Jalan Raya (Original)
+            {
+                id: 12,
+                type: 'ORIGINAL',
+                code: '2020-SK-02 (Asli #12)',
+                flag: '🇸🇰',
+                title: 'Kota dan Jalan Raya',
+                category: 'Representasi Graf & Abstraksi',
+                story: `Sebuah peta memiliki 5 kota (<strong>A, B, C, D, E</strong>) dan 4 jalan raya berwarna:<br>
+                • <strong>Jalan Oranye:</strong> melewati Kota <strong>A</strong> dan Kota <strong>D</strong>.<br>
+                • <strong>Jalan Biru:</strong> melewati Kota <strong>B</strong> dan Kota <strong>D</strong>.<br>
+                • <strong>Jalan Merah:</strong> melewati Kota <strong>B</strong> dan Kota <strong>C</strong>.<br>
+                • <strong>Jalan Hijau:</strong> melewati Kota <strong>E</strong>, Kota <strong>D</strong>, dan Kota <strong>C</strong>.<br>
+                Kita ingin membuat diagram graf di mana dua kota dihubungkan dengan garis <strong>jika dan hanya jika berada pada jalan raya yang sama</strong>.`,
+                visual: `<svg viewBox="0 0 320 150" class="w-full max-w-sm h-36 bg-white rounded-xl border p-2">
+                    <!-- 4 Colored Highways -->
+                    <path d="M50 15 Q70 90 210 140" stroke="#f97316" stroke-width="4" fill="none"/>
+                    <path d="M190 10 Q160 80 130 140" stroke="#3b82f6" stroke-width="4" fill="none"/>
+                    <path d="M15 70 Q140 15 295 125" stroke="#ef4444" stroke-width="4" fill="none"/>
+                    <path d="M20 135 Q120 85 300 75" stroke="#22c55e" stroke-width="4" fill="none"/>
+                    <!-- 5 Cities -->
+                    <circle cx="56" cy="35" r="7" fill="#0f172a"/><text x="70" y="35" font-weight="bold" font-size="13">A</text>
+                    <circle cx="171" cy="48" r="7" fill="#0f172a"/><text x="184" y="45" font-weight="bold" font-size="13">B</text>
+                    <circle cx="242" cy="83" r="7" fill="#0f172a"/><text x="250" y="75" font-weight="bold" font-size="13">C</text>
+                    <circle cx="160" cy="92" r="7" fill="#0f172a"/><text x="170" y="86" font-weight="bold" font-size="13">D</text>
+                    <circle cx="60" cy="105" r="7" fill="#0f172a"/><text x="55" y="93" font-weight="bold" font-size="13">E</text>
+                </svg>`,
+                challenge: 'Diagram mana yang secara tepat merepresentasikan hubungan kota-kota pada peta di atas?',
+                options: [
+                    'A. Garis penghubung: (A-D), (E-D), (B-D), (B-C), (D-C) [Tanpa garis E-C]',
+                    'B. Garis penghubung: (A-B), (A-D), (E-D), (B-D), (B-C), (D-C)',
+                    'C. Garis penghubung: (A-D), (B-D), (B-C), (D-C), (E-D), dan (E-C)',
+                    'D. Garis penghubung: (A-B), (A-E), (A-D), (B-C), (D-C), (E-C)'
+                ],
+                correct: 2,
+                explanation: `Perhatikan Jalan Hijau yang melewati tiga kota sekaligus: <strong>E, D, dan C</strong>. Karena E, D, dan C berada di jalan raya yang sama, maka ketiganya harus saling terhubung membentuk segitiga: <strong>(E-D), (D-C), dan (E-C)</strong>. Ditambah (A-D) dari jalan oranye, (B-D) dari jalan biru, dan (B-C) dari jalan merah. Jawaban yang tepat adalah <strong>C</strong>.`
+            },
+
+            // 13. Buku Perpustakaan (Original)
+            {
+                id: 13,
+                type: 'ORIGINAL',
+                code: '2020-CA-04 (Asli #13)',
+                flag: '🇨🇦',
+                title: 'Buku Perpustakaan',
+                category: 'Struktur Data Stack (LIFO)',
+                story: `Perpustakaan Kota Bebras menumpuk bukunya dalam satu tumpukan. Peminjam selalu mengambil buku paling <strong>ATAS</strong>, dan buku yang dikembalikan selalu diletakkan kembali di paling <strong>ATAS</strong>.<br>
+                Tumpukan awal minggu (dari <strong>ATAS ke BAWAH</strong>):<br>
+                1. <em>Charlotte's Web</em> (Ungu)<br>
+                2. <em>Curious George</em> (Hijau Muda)<br>
+                3. <em>Go, Dog, Go!</em> (Oranye)<br>
+                4. <em>The Hobbit</em> (Biru)<br>
+                5. <em>Fox in Socks</em> (Hijau Tua)`,
+                visual: `<div class="bg-amber-50 p-3.5 rounded-xl border border-amber-200 text-xs sm:text-sm font-mono space-y-1 max-w-md w-full">
+                    <div class="font-bold text-amber-900 border-b border-amber-200 pb-1 mb-1">📋 Catatan Petugas Perpustakaan:</div>
+                    <div>1. Alba  - PINJAM</div>
+                    <div>2. Felix - PINJAM</div>
+                    <div>3. Alba  - KEMBALIKAN</div>
+                    <div>4. Marta - PINJAM</div>
+                    <div>5. Felix - KEMBALIKAN</div>
+                    <div class="font-bold text-teal-800">6. Cato  - PINJAM (Buku apa?)</div>
+                </div>`,
+                challenge: 'Berdasarkan catatan petugas perpustakaan, buku apa yang dipinjam oleh Cato?',
+                options: [
+                    'A. Charlotte\'s Web',
+                    'B. The Hobbit',
+                    'C. Curious George',
+                    'D. Go, Dog, Go!'
+                ],
+                correct: 2,
+                explanation: `Mari kita lacak tumpukan teratas (LIFO - Last In First Out):<br>
+                1. <strong>Alba pinjam</strong> buku ke-1 (<em>Charlotte's Web</em>).<br>
+                2. <strong>Felix pinjam</strong> buku ke-2 yang kini di atas (<em>Curious George</em>).<br>
+                3. Alba kembalikan <em>Charlotte's Web</em> ke atas, lalu Marta meminjamnya.<br>
+                4. <strong>Felix mengembalikan</strong> bukunya (<em>Curious George</em>) ke paling atas.<br>
+                5. Saat <strong>Cato meminjam</strong>, ia mengambil buku paling atas yaitu <strong>Curious George (C)</strong>.`
+            },
+
+            // 14. Kalender (Original)
+            {
+                id: 14,
+                type: 'ORIGINAL',
+                code: '2020-LV-02 (Asli #14)',
+                flag: '🇱🇻',
+                title: 'Kalender',
+                category: 'Penalaran Logis & Urutan Waktu',
+                story: `Perhatikan teka-teki waktu berikut:<br>
+                <strong>"Sehari sebelum tiga hari yang lalu adalah hari sebelum Minggu."</strong>`,
+                visual: `<div class="flex items-center gap-2 bg-white px-4 py-3 rounded-2xl border shadow-sm text-xs sm:text-sm font-bold">
+                    <span class="px-2 py-1 rounded bg-rose-100 text-rose-700">Sn</span>
+                    <span class="px-2 py-1 rounded bg-slate-100">Sl</span>
+                    <span class="px-2 py-1 rounded bg-slate-100">Rb</span>
+                    <span class="px-2 py-1 rounded bg-slate-100">Km</span>
+                    <span class="px-2 py-1 rounded bg-slate-100">Jm</span>
+                    <span class="px-2 py-1 rounded bg-slate-100">Sb</span>
+                    <span class="px-2 py-1 rounded bg-rose-500 text-white">Mn</span>
+                </div>`,
+                challenge: 'Berdasarkan petunjuk di atas, BESOK adalah hari apa?',
+                options: [
+                    'A. Minggu',
+                    'B. Rabu',
+                    'C. Kamis',
+                    'D. Senin'
+                ],
+                correct: 2,
+                explanation: `Mari kita uraikan langkah demi langkah:<br>
+                1. "Hari sebelum Minggu" adalah hari <strong>Sabtu</strong>.<br>
+                2. "Sehari sebelum tiga hari yang lalu" sama dengan <strong>4 hari yang lalu</strong>.<br>
+                3. Jika 4 hari yang lalu adalah Sabtu, maka <strong>hari ini</strong> adalah Sabtu + 4 hari = <strong>Rabu</strong>.<br>
+                4. Karena hari ini Rabu, maka <strong>besok adalah hari Kamis (C)</strong>.`
+            },
+
+            // 15. Kangguru Pelompat (Original)
+            {
+                id: 15,
+                type: 'ORIGINAL',
+                code: '2020-LT-01 (Asli #15)',
+                flag: '🇱🇹',
+                title: 'Kangguru Pelompat',
+                category: 'Jalur Terpendek (Shortest Path)',
+                story: `Sisi si Kanguru berada di pojok <strong>Kiri Atas</strong> jaring berukuran 6×6 titik persimpangan dan ingin pulang ke tendanya di pojok <strong>Kanan Bawah</strong>.<br>
+                • Dalam 1 lompatan, Sisi berpindah 1 ruas garis (vertikal atau mendatar) ke titik persimpangan sebelahnya.<br>
+                • Sisi <strong>HANYA dapat melompati jalur yang memiliki maksimal 2 batu bata</strong> (jalur dengan 3 batu bata tidak bisa dilewati karena terlalu tinggi).`,
+                visual: `<div class="bg-sky-50 p-3 rounded-xl border border-sky-200 text-xs max-w-md space-y-1.5">
+                    <div class="font-bold text-sky-900">🦘 Peta Rintangan Batu Bata (Grid 6×6 Titik):</div>
+                    <p class="text-slate-600">Jalur terpendek tanpa rintangan pada grid 6×6 adalah 10 lompatan (5 kanan + 5 bawah). Namun karena banyak ruas jalan ditutup oleh tumpukan 3 batu bata, Sisi harus memutar di dua bagian jalur.</p>
+                </div>`,
+                challenge: 'Berapa lompatan paling sedikit yang harus dilakukan Sisi untuk pulang ke tendanya secepat mungkin?',
+                options: [
+                    'A. 10 lompatan',
+                    'B. 12 lompatan',
+                    'C. 14 lompatan',
+                    'D. 16 lompatan'
+                ],
+                correct: 2,
+                explanation: `Dengan menelusuri ruas yang hanya berisi 1 atau 2 batu bata dari Kiri Atas (0,0) ke Kanan Bawah (5,5), Sisi harus melakukan dua kali belokan memutar (masing-masing menambah 2 langkah dari rute lurus 10 langkah). Rute tercepat memerlukan tepat <strong>14 lompatan (C)</strong>.`
+            },
+
+            // ==================== SOAL 16 - 25: PENGEMBANGAN KONSEP YANG SAMA ====================
+
+            // 16. Pengembangan Konsep Manik-manik (Pola Rangkaian Gelang)
+            {
+                id: 16,
+                type: 'EXPANSION',
+                code: 'MUGEB-CT-16 (Pengembangan #1)',
+                flag: '🇮🇩',
+                title: 'Gelang Kristal Aisyah',
+                category: 'Algoritma & Pola',
+                story: `Aisyah siswa MUGEB Primary School membuat gelang mengikuti algoritma yang mirip dengan Mariam:<br>
+                1. Ambil satu manik <strong>Hati (❤️)</strong> dan satu manik <strong>Berlian (💎)</strong>, lalu hubungkan keduanya.<br>
+                2. Ulangi langkah pertama 2 kali lagi (sehingga ada 3 pasang ❤️-💎).<br>
+                3. Hubungkan ketiga pasang tersebut menjadi satu rantai.<br>
+                4. Tambahkan <strong>2 manik Hati (❤️❤️)</strong> di ujung rantai lalu sambungkan menjadi gelang melingkar.`,
+                visual: `<div class="bg-white px-4 py-2.5 rounded-xl border text-sm font-bold text-slate-700">
+                    Komponen: 3 pasang (❤️-💎) + 1 pasang (❤️-❤️) = Total 5 ❤️ dan 3 💎
+                </div>`,
+                challenge: 'Manakah di antara susunan gelang melingkar berikut yang TIDAK MUNGKIN dibuat oleh Aisyah?',
+                options: [
+                    'A. ❤️ - 💎 - ❤️ - 💎 - ❤️ - 💎 - ❤️ - ❤️',
+                    'B. ❤️ - 💎 - 💎 - ❤️ - 💎 - ❤️ - ❤️ - ❤️',
+                    'C. ❤️ - ❤️ - ❤️ - 💎 - 💎 - 💎 - ❤️ - ❤️',
+                    'D. 💎 - ❤️ - ❤️ - 💎 - ❤️ - 💎 - ❤️ - ❤️'
+                ],
+                correct: 2,
+                explanation: `Sama seperti konsep soal <em>Manik-manik</em>, setiap Berlian (💎) awalnya dipasangkan dengan satu Hati (❤️). Oleh karena itu, tidak mungkin ada <strong>3 Berlian berurutan (💎-💎-💎)</strong> karena berlian di tengah tidak akan bersebelahan dengan satu pun manik hati. Maka pilihan <strong>C</strong> tidak mungkin terbentuk.`
+            },
+
+            // 17. Pengembangan Konsep Pencakar Langit (Pengurutan Data)
+            {
+                id: 17,
+                type: 'EXPANSION',
+                code: 'MUGEB-CT-17 (Pengembangan #2)',
+                flag: '🇮🇩',
+                title: 'Barisan Pohon Taman Sekolah',
+                category: 'Pengurutan (Sorting)',
+                story: `Di halaman MUGEB Primary School, terdapat 10 pohon cemara yang ditanam dalam dua kelompok barisan yang masing-masing semakin tinggi dari kiri ke kanan:<br>
+                • <strong>Barisan Kiri (5 pohon):</strong> 100 cm, 130 cm, <strong>Pohon P (160 cm)</strong>, <strong>Pohon Q (190 cm)</strong>, 220 cm.<br>
+                • <strong>Barisan Kanan (5 pohon):</strong> 110 cm, 140 cm, <strong>Pohon R (175 cm)</strong>, <strong>Pohon S (205 cm)</strong>, 230 cm.`,
+                visual: `<div class="grid grid-cols-2 gap-3 text-xs font-semibold">
+                    <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
+                        <div class="font-bold text-emerald-900 mb-1">🌲 Kelompok Kiri:</div>
+                        100 | 130 | <strong>P(160)</strong> | <strong>Q(190)</strong> | 220
+                    </div>
+                    <div class="bg-teal-50 p-2.5 rounded-xl border border-teal-200">
+                        <div class="font-bold text-teal-900 mb-1">🌲 Kelompok Kanan:</div>
+                        110 | 140 | <strong>R(175)</strong> | <strong>S(205)</strong> | 230
+                    </div>
+                </div>`,
+                challenge: 'Jika ke-10 pohon tersebut diurutkan dari yang PALING PENDEK ke yang PALING TINGGI, pohon manakah yang berada pada urutan ke-7?',
+                options: [
+                    'A. Pohon P (160 cm)',
+                    'B. Pohon R (175 cm)',
+                    'C. Pohon Q (190 cm)',
+                    'D. Pohon S (205 cm)'
+                ],
+                correct: 2,
+                explanation: `Mari kita urutkan ke-10 pohon dari yang paling pendek:<br>
+                1.(100), 2.(110), 3.(130), 4.(140), 5.<strong>P(160)</strong>, 6.<strong>R(175)</strong>, 7.<strong>Q(190)</strong>, 8.<strong>S(205)</strong>, 9.(220), 10.(230).<br>
+                Pohon pada urutan ke-7 adalah <strong>Pohon Q (190 cm)</strong> (atau dapat dicari dengan mengeliminasi 3 pohon tertinggi yaitu 230, 220, dan 205).`
+            },
+
+            // 18. Pengembangan Konsep Beruang yang Mana (Logika Boolean)
+            {
+                id: 18,
+                type: 'EXPANSION',
+                code: 'MUGEB-CT-18 (Pengembangan #3)',
+                flag: '🇮🇩',
+                title: 'Memilih Robot Lomba',
+                category: 'Logika Boolean',
+                story: `Tim Robotika MUGEB ingin memilih satu robot untuk kompetisi. Robot yang dipilih harus memenuhi aturan:<br>
+                • Memiliki <strong>roda rantai (⚙️)</strong>,<br>
+                • Dilengkapi <strong>sensor cahaya ATAU capit mekanik</strong>,<br>
+                • Tetapi <strong>TIDAK memakai antena panjang (📡)</strong>.`,
+                visual: `<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-center">
+                    <div class="bg-white p-2.5 rounded-xl border"><strong>Robot Alpha</strong><br>⚙️ Roda Rantai<br>💡 Sensor Cahaya<br>📡 Antena Panjang</div>
+                    <div class="bg-white p-2.5 rounded-xl border"><strong>Robot Beta</strong><br>⚙️ Roda Rantai<br>🦾 Capit Mekanik<br>❌ Tanpa Antena</div>
+                    <div class="bg-white p-2.5 rounded-xl border"><strong>Robot Gamma</strong><br>⚙️ Roda Rantai<br>❌ Tanpa Sensor/Capit<br>❌ Tanpa Antena</div>
+                    <div class="bg-white p-2.5 rounded-xl border"><strong>Robot Delta</strong><br>🛞 Roda Biasa<br>💡 Sensor & 🦾 Capit<br>❌ Tanpa Antena</div>
+                </div>`,
+                challenge: 'Robot manakah yang memenuhi seluruh kriteria Tim Robotika MUGEB?',
+                options: [
+                    'A. Robot Alpha',
+                    'B. Robot Beta',
+                    'C. Robot Gamma',
+                    'D. Robot Delta'
+                ],
+                correct: 1,
+                explanation: `• Robot Alpha gagal karena memakai antena panjang.<br>
+                • Robot Gamma gagal karena tidak punya sensor cahaya maupun capit.<br>
+                • Robot Delta gagal karena tidak memakai roda rantai.<br>
+                • <strong>Robot Beta (B)</strong> memenuhi semua syarat: punya roda rantai, punya capit mekanik (memenuhi syarat "sensor ATAU capit"), dan tidak memakai antena panjang.`
+            },
+
+            // 19. Pengembangan Konsep Tumpukan Mangkok (Pigeonhole & Stack)
+            {
+                id: 19,
+                type: 'EXPANSION',
+                code: 'MUGEB-CT-19 (Pengembangan #4)',
+                flag: '🇮🇩',
+                title: 'Tumpukan Piring Kantin Sehat',
+                category: 'Struktur Data Stack',
+                story: `Di kantin sehat sekolah, terdapat tumpukan 10 piring warna-warni. Piring hanya bisa diambil satu per satu dari paling <strong>ATAS</strong>.<br>
+                Urutan piring dari <strong>ATAS ke BAWAH</strong> adalah:<br>
+                1. Merah | 2. Hijau | 3. Biru | 4. Kuning | 5. Merah | 6. Biru | 7. Hijau | 8. Biru | 9. Merah | 10. Kuning`,
+                visual: `<div class="flex flex-wrap justify-center gap-1.5 text-xs font-bold">
+                    <span class="px-2.5 py-1 rounded bg-rose-500 text-white">1. Merah</span>
+                    <span class="px-2.5 py-1 rounded bg-emerald-500 text-white">2. Hijau</span>
+                    <span class="px-2.5 py-1 rounded bg-blue-600 text-white">3. Biru</span>
+                    <span class="px-2.5 py-1 rounded bg-amber-400 text-slate-900">4. Kuning</span>
+                    <span class="px-2.5 py-1 rounded bg-rose-500 text-white">5. Merah</span>
+                    <span class="px-2.5 py-1 rounded bg-blue-600 text-white">6. Biru</span>
+                    <span class="px-2.5 py-1 rounded bg-emerald-500 text-white">7. Hijau</span>
+                    <span class="px-2.5 py-1 rounded bg-blue-600 text-white">8. Biru</span>
+                    <span class="px-2.5 py-1 rounded bg-rose-500 text-white">9. Merah</span>
+                    <span class="px-2.5 py-1 rounded bg-amber-400 text-slate-900">10. Kuning</span>
+                </div>`,
+                challenge: 'Berapa piring PALING SEDIKIT yang harus diambil dari atas agar kita mendapatkan 3 piring dengan warna yang sama?',
+                options: [
+                    'A. 6 piring',
+                    'B. 7 piring',
+                    'C. 8 piring',
+                    'D. 9 piring'
+                ],
+                correct: 2,
+                explanation: `Mari kita hitung kapan ada warna yang mencapai jumlah 3 buah:<br>
+                • Piring Biru muncul di urutan ke-3, ke-6, dan <strong>ke-8</strong>.<br>
+                • Piring Merah baru mencapai 3 buah di urutan ke-9.<br>
+                Jadi jumlah paling sedikit yang harus diambil adalah <strong>8 piring (C)</strong> untuk memperoleh 3 piring Biru.`
+            },
+
+            // 20. Pengembangan Konsep Papan Kunci Rahasia (Sandi Substitusi)
+            {
+                id: 20,
+                type: 'EXPANSION',
+                code: 'MUGEB-CT-20 (Pengembangan #5)',
+                flag: '🇮🇩',
+                title: 'Sandi Papan Ketik MUGEB',
+                category: 'Kriptografi & Substitusi',
+                story: `Menggunakan papan ketik rahasia yang sama seperti milik Joni, setiap huruf yang ditekan akan bertukar sesuai panah dua arah berikut:<br>
+                <strong>M ↔ N</strong> &nbsp;|&nbsp; <strong>U ↔ H</strong> &nbsp;|&nbsp; <strong>G ↔ B</strong> &nbsp;|&nbsp; <strong>E ↔ S</strong> &nbsp;|&nbsp; <strong>A ↔ Z</strong> &nbsp;|&nbsp; <strong>I ↔ O</strong> &nbsp;|&nbsp; <strong>R ↔ F</strong> &nbsp;|&nbsp; <strong>T ↔ Y</strong>`,
+                visual: `<div class="bg-teal-900 text-white px-6 py-3 rounded-2xl text-center">
+                    <div class="text-xs text-teal-200">Ingin mengetik kata:</div>
+                    <div class="font-mono text-2xl font-bold tracking-widest text-amber-300">MUGEB</div>
+                </div>`,
+                challenge: 'Jika seorang siswa menekan tombol H - E - G - S - N di papan ketik rahasia, kata apa yang tampil di layar? Dan sebaliknya jika ia mengetik "MUGEB", apa yang tampil di layar?',
+                options: [
+                    'A. Mengetik MUGEB akan menampilkan tulisan "NHBSG" di layar',
+                    'B. Mengetik MUGEB akan menampilkan tulisan "NUBSE" di layar',
+                    'C. Mengetik MUGEB akan menampilkan tulisan "MHBSG" di layar',
+                    'D. Mengetik MUGEB akan menampilkan tulisan "NHESG" di layar'
+                ],
+                correct: 0,
+                explanation: `Mari kita cocokkan huruf demi huruf untuk kata <strong>M - U - G - E - B</strong>:<br>
+                • <strong>M</strong> ↔ <strong>N</strong><br>
+                • <strong>U</strong> ↔ <strong>H</strong><br>
+                • <strong>G</strong> ↔ <strong>B</strong><br>
+                • <strong>E</strong> ↔ <strong>S</strong><br>
+                • <strong>B</strong> ↔ <strong>G</strong><br>
+                Maka yang tampil di layar adalah <strong>NHBSG (A)</strong>.`
+            },
+
+            // 21. Pengembangan Konsep Binatang Peliharaan Polly (Logika De Morgan)
+            {
+                id: 21,
+                type: 'EXPANSION',
+                code: 'MUGEB-CT-21 (Pengembangan #6)',
+                flag: '🇮🇩',
+                title: 'Tebakan Ekstrakurikuler',
+                category: 'Logika Proposisi',
+                story: `Raka berkata kepada Dinda: <em>"Budi mengikuti ekstrakurikuler Panahan DAN Sari mengikuti ekstrakurikuler Lukis, benar kan?"</em><br>
+                Dinda menjawab: <strong>"Tidak, pernyataanmu salah!"</strong>`,
+                visual: `<div class="bg-white px-4 py-3 rounded-xl border text-xs sm:text-sm font-semibold text-slate-700">
+                    Negasi dari: (Budi = Panahan) <strong>DAN</strong> (Sari = Lukis)
+                </div>`,
+                challenge: 'Berdasarkan jawaban Dinda, manakah pernyataan di bawah ini yang PASTI BENAR?',
+                options: [
+                    'A. Budi tidak ikut Panahan dan Sari tidak ikut Lukis.',
+                    'B. Budi tidak ikut Panahan atau Sari tidak ikut Lukis.',
+                    'C. Budi ikut Panahan, tetapi Sari tidak ikut Lukis.',
+                    'D. Budi tidak ikut Panahan, tetapi Sari ikut Lukis.'
+                ],
+                correct: 1,
+                explanation: `Sesuai prinsip logika De Morgan (seperti pada soal <em>Binatang Peliharaan Polly</em>), jika pernyataan gabungan "A dan B" bernilai salah, maka yang pasti benar adalah minimal salah satu tidak terpenuhi, yaitu: <strong>"Budi tidak ikut Panahan ATAU Sari tidak ikut Lukis" (B)</strong>.`
+            },
+
+            // 22. Pengembangan Konsep Berbisik (Urutan Aturan)
+            {
+                id: 22,
+                type: 'EXPANSION',
+                code: 'MUGEB-CT-22 (Pengembangan #7)',
+                flag: '🇮🇩',
+                title: 'Antrean Presentasi Proyek',
+                category: 'Pengurutan Topologis',
+                story: `Empat kelompok siswa (Kelompok <strong>P, Q, R, dan S</strong>) akan maju mempresentasikan proyek Informatika secara bergantian dengan aturan:<br>
+                • Kelompok <strong>R</strong> harus maju <strong>SEBELUM</strong> Kelompok <strong>P</strong>.<br>
+                • Kelompok <strong>S</strong> harus maju <strong>SETELAH</strong> Kelompok <strong>P</strong>.<br>
+                • Kelompok <strong>Q</strong> harus maju <strong>SEBELUM</strong> Kelompok <strong>R</strong>.`,
+                visual: `<div class="bg-teal-50 px-4 py-2.5 rounded-xl border border-teal-200 text-xs sm:text-sm font-bold text-teal-900">
+                    Urutan Maju: Pertama ➔ Kedua ➔ Ketiga ➔ Keempat
+                </div>`,
+                challenge: 'Manakah urutan presentasi dari yang pertama hingga terakhir yang sesuai dengan semua aturan?',
+                options: [
+                    'A. R, Q, P, S',
+                    'B. Q, R, S, P',
+                    'C. Q, R, P, S',
+                    'D. P, R, Q, S'
+                ],
+                correct: 2,
+                explanation: `Mari kita rangkai aturannya:<br>
+                1. Q sebelum R ➔ <code>Q ➔ R</code><br>
+                2. R sebelum P ➔ <code>Q ➔ R ➔ P</code><br>
+                3. S setelah P ➔ <code>Q ➔ R ➔ P ➔ S</code><br>
+                Jadi urutan yang benar adalah <strong>Q, R, P, S (C)</strong>.`
+            },
+
+            // 23. Pengembangan Konsep Balok Kayu (Pergeseran Siklik)
+            {
+                id: 23,
+                type: 'EXPANSION',
+                code: 'MUGEB-CT-23 (Pengembangan #8)',
+                flag: '🇮🇩',
+                title: 'Lampu Hias Menara',
+                category: 'Pengenalan Pola & Rotasi',
+                story: `Sebuah menara lampu memiliki 4 tingkat warna lampu dari <strong>Atas ke Bawah</strong>. Setiap menit, susunan warnanya bergeser mengikuti pola tetap:<br>
+                • <strong>Menit 1:</strong> Atas = Merah, ke-2 = Kuning, ke-3 = Hijau, Bawah = Biru<br>
+                • <strong>Menit 2:</strong> Atas = Kuning, ke-2 = Hijau, ke-3 = Biru, Bawah = Merah<br>
+                • <strong>Menit 3:</strong> Atas = Hijau, ke-2 = Biru, ke-3 = Merah, Bawah = Kuning`,
+                visual: `<div class="grid grid-cols-4 gap-2 text-center text-xs font-bold">
+                    <div class="bg-white p-2 rounded-xl border">Menit 1<br><span class="text-rose-600">Merah</span><br><span class="text-amber-500">Kuning</span><br><span class="text-emerald-600">Hijau</span><br><span class="text-blue-600">Biru</span></div>
+                    <div class="bg-white p-2 rounded-xl border">Menit 2<br><span class="text-amber-500">Kuning</span><br><span class="text-emerald-600">Hijau</span><br><span class="text-blue-600">Biru</span><br><span class="text-rose-600">Merah</span></div>
+                    <div class="bg-white p-2 rounded-xl border">Menit 3<br><span class="text-emerald-600">Hijau</span><br><span class="text-blue-600">Biru</span><br><span class="text-rose-600">Merah</span><br><span class="text-amber-500">Kuning</span></div>
+                    <div class="bg-amber-50 p-2 rounded-xl border-2 border-amber-400 flex items-center justify-center">Menit 4<br>❓</div>
+                </div>`,
+                challenge: 'Bagaimana susunan warna lampu dari ATAS ke BAWAH pada Menit ke-4?',
+                options: [
+                    'A. Biru, Merah, Kuning, Hijau',
+                    'B. Merah, Kuning, Hijau, Biru',
+                    'C. Biru, Hijau, Kuning, Merah',
+                    'D. Kuning, Biru, Merah, Hijau'
+                ],
+                correct: 0,
+                explanation: `Polanya adalah setiap menit semua warna naik 1 tingkat ke atas, dan warna paling atas berpindah ke paling bawah. Dari Menit 3 <code>[Hijau, Biru, Merah, Kuning]</code>, Hijau pindah ke paling bawah sehingga Menit 4 menjadi: <strong>Biru, Merah, Kuning, Hijau (A)</strong>.`
+            },
+
+            // 24. Pengembangan Konsep Buku Perpustakaan (Operasi Stack LIFO)
+            {
+                id: 24,
+                type: 'EXPANSION',
+                code: 'MUGEB-CT-24 (Pengembangan #9)',
+                flag: '🇮🇩',
+                title: 'Tumpukan Buku Pojok Baca',
+                category: 'Struktur Data Stack (LIFO)',
+                story: `Di Pojok Baca kelas MUGEB, terdapat tumpukan 4 buku dari <strong>ATAS ke BAWAH</strong>:<br>
+                1. <em>Ensiklopedia Sains</em> (Paling Atas)<br>
+                2. <em>Kisah Nabi</em><br>
+                3. <em>Matematika Seru</em><br>
+                4. <em>Kamus Bahasa Inggris</em> (Paling Bawah)<br><br>
+                Aturan peminjaman sama: ambil dari paling atas, dan kembalikan ke paling atas. Catatan hari ini:<br>
+                • <strong>Nabil</strong> meminjam 1 buku.<br>
+                • <strong>Zahra</strong> meminjam 1 buku.<br>
+                • <strong>Farhan</strong> meminjam 1 buku.<br>
+                • <strong>Zahra</strong> mengembalikan bukunya.<br>
+                • <strong>Alya</strong> meminjam 1 buku.`,
+                visual: `<div class="bg-white px-4 py-3 rounded-xl border text-xs font-mono">
+                    Awal (Atas➔Bawah): [1.Sains, 2.Kisah Nabi, 3.Matematika, 4.Kamus]
+                </div>`,
+                challenge: 'Buku apakah yang dipinjam oleh Alya?',
+                options: [
+                    'A. Ensiklopedia Sains',
+                    'B. Kisah Nabi',
+                    'C. Matematika Seru',
+                    'D. Kamus Bahasa Inggris'
+                ],
+                correct: 1,
+                explanation: `Mari kita lacak buku yang diambil:<br>
+                1. Nabil meminjam buku ke-1 (<em>Ensiklopedia Sains</em>).<br>
+                2. Zahra meminjam buku ke-2 (<em>Kisah Nabi</em>).<br>
+                3. Farhan meminjam buku ke-3 (<em>Matematika Seru</em>).<br>
+                4. Zahra mengembalikan bukunya (<em>Kisah Nabi</em>) ke paling atas tumpukan.<br>
+                5. Saat Alya meminjam buku teratas, ia mendapatkan buku yang baru dikembalikan Zahra yaitu <strong>Kisah Nabi (B)</strong>.`
+            },
+
+            // 25. Pengembangan Konsep Kalender (Penalaran Waktu)
+            {
+                id: 25,
+                type: 'EXPANSION',
+                code: 'MUGEB-CT-25 (Pengembangan #10)',
+                flag: '🇮🇩',
+                title: 'Jadwal Latihan Pramuka Hizbul Wathan',
+                category: 'Penalaran Logis & Urutan Waktu',
+                story: `Bapak Guru memberikan teka-teki jadwal latihan:<br>
+                <strong>"Dua hari setelah kemarin adalah hari Jumat."</strong>`,
+                visual: `<div class="bg-amber-50 px-5 py-3 rounded-xl border border-amber-200 text-xs sm:text-sm font-bold text-amber-900">
+                    Petunjuk: Kemarin + 2 Hari = Jumat
+                </div>`,
+                challenge: 'Jika pernyataan tersebut benar, maka LUSA (dua hari setelah hari ini) adalah hari apa?',
+                options: [
+                    'A. Hari Jumat',
+                    'B. Hari Sabtu',
+                    'C. Hari Minggu',
+                    'D. Hari Senin'
+                ],
+                correct: 1,
+                explanation: `Mari kita hitung dengan cermat:<br>
+                1. "Satu hari setelah kemarin" adalah <strong>Hari Ini</strong>.<br>
+                2. Maka "Dua hari setelah kemarin" adalah <strong>Besok</strong>.<br>
+                3. Karena Besok adalah hari <strong>Jumat</strong>, berarti <strong>Hari Ini adalah hari Kamis</strong>.<br>
+                4. Maka LUSA (2 hari setelah hari Kamis) adalah hari <strong>Sabtu (B)</strong>.`
+            }
+        ];
+
+        // ==================== KONFIGURASI GOOGLE SPREADSHEET & GITHUB ====================
+        // GURU DAPAT MENEMPELKAN URL GOOGLE APPS SCRIPT WEB APP DI SINI SEBELUM DI-UPLOAD KE GITHUB:
+        const DEFAULT_SCRIPT_URL = ""; 
+
+        let customScriptUrl = DEFAULT_SCRIPT_URL;
+        let recapHistory = []; // Menyimpan riwayat pengerjaan untuk tabel rekap & ekspor CSV
+        let quizStartTime = null;
+        let lastSubmittedPayload = null;
+
+        function getActiveScriptUrl() {
+            return (customScriptUrl || DEFAULT_SCRIPT_URL || "").trim();
+        }
+
+        function updateSheetIndicatorUI() {
+            const url = getActiveScriptUrl();
+            const indicator = document.getElementById('sheetConnectionIndicator');
+            if (!indicator) return;
+            if (url) {
+                indicator.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold';
+                indicator.innerHTML = '<i class="fa-solid fa-circle-check"></i> Spreadsheet Terhubung';
+            } else {
+                indicator.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-bold';
+                indicator.innerHTML = '<i class="fa-solid fa-plug-circle-exclamation"></i> Mode Lokal (URL Spreadsheet Belum Diisi)';
+            }
+        }
+
+        // ==================== GAME STATE VARIABLES ====================
+        let selectedMode = 'ALL'; // 'ALL' (25), 'ORIGINAL' (15), 'EXPANSION' (10)
+        let activeQuestions = [];
+        let currentIndex = 0;
+        let userAnswers = {}; // { questionIndex: selectedOptionIndex }
+        let currentStreak = 0;
+        let bestStreak = 0;
+
+        // ==================== MODE SELECTION & INITIALIZATION ====================
+        function selectMode(mode) {
+            playTone('click');
+            selectedMode = mode;
+            ['ALL', 'ORIGINAL', 'EXPANSION'].forEach(m => {
+                const btn = document.getElementById('mode_' + m);
+                if (m === mode) {
+                    btn.className = 'mode-btn p-4 rounded-2xl border-2 border-teal-600 bg-teal-50/70 text-left transition flex flex-col justify-between shadow-sm';
+                } else {
+                    btn.className = 'mode-btn p-4 rounded-2xl border-2 border-slate-200 hover:border-teal-400 bg-white text-left transition flex flex-col justify-between';
+                }
+            });
+        }
+
+        function startGame() {
+            const nameInput = document.getElementById('playerNameInput');
+            const alertBox = document.getElementById('nameValidationAlert');
+            if (!nameInput.value.trim()) {
+                alertBox.classList.remove('hidden');
+                nameInput.focus();
+                playTone('wrong');
+                return;
+            }
+            alertBox.classList.add('hidden');
+
+            playTone('click');
+            if (selectedMode === 'ORIGINAL') {
+                activeQuestions = ALL_QUESTIONS.filter(q => q.type === 'ORIGINAL');
+            } else if (selectedMode === 'EXPANSION') {
+                activeQuestions = ALL_QUESTIONS.filter(q => q.type === 'EXPANSION');
+            } else {
+                activeQuestions = [...ALL_QUESTIONS];
+            }
+
+            currentIndex = 0;
+            userAnswers = {};
+            currentStreak = 0;
+            bestStreak = 0;
+            quizStartTime = Date.now();
+
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+
+            document.getElementById('liveStats').classList.remove('hidden');
+            document.getElementById('liveStats').classList.add('flex');
+            document.getElementById('mapBtn').classList.remove('hidden');
+            document.getElementById('mapBtn').classList.add('inline-flex');
+
+            updateLiveHeader();
+            renderCurrentQuestion();
+        }
+
+        function formatDuration(ms) {
+            const totalSec = Math.max(1, Math.floor(ms / 1000));
+            const mins = String(Math.floor(totalSec / 60)).padStart(2, '0');
+            const secs = String(totalSec % 60).padStart(2, '0');
+            return `${mins}:${secs}`;
+        }
+
+        function calculatePointsPerQuestion() {
+            return Math.round((100 / activeQuestions.length) * 10) / 10;
+        }
+
+        function calculateCurrentScore() {
+            let correctCount = 0;
+            Object.keys(userAnswers).forEach(idx => {
+                const q = activeQuestions[idx];
+                if (q && userAnswers[idx] === q.correct) {
+                    correctCount++;
+                }
+            });
+            return Math.round((correctCount / activeQuestions.length) * 100);
+        }
+
+        function updateLiveHeader() {
+            document.getElementById('headerScore').textContent = calculateCurrentScore();
+            document.getElementById('headerStreak').textContent = currentStreak;
+            document.getElementById('answeredCountText').textContent = Object.keys(userAnswers).length;
+            document.getElementById('totalCountText').textContent = activeQuestions.length;
+        }
+
+        // ==================== RENDER QUESTION ====================
+        function renderCurrentQuestion() {
+            const q = activeQuestions[currentIndex];
+            const total = activeQuestions.length;
+
+            // Header Badges
+            document.getElementById('qNumberBadge').textContent = `Soal ${currentIndex + 1} / ${total}`;
+            document.getElementById('qSourceBadge').textContent = q.code;
+            document.getElementById('qCategoryBadge').textContent = q.category;
+            document.getElementById('qCountryFlag').textContent = q.flag;
+            document.getElementById('qTitle').textContent = q.title;
+
+            // Progress Bar
+            const pct = Math.round(((currentIndex + 1) / total) * 100);
+            document.getElementById('progressBar').style.width = `${pct}%`;
+
+            // Story, Visual & Challenge
+            document.getElementById('qStory').innerHTML = q.story;
+            document.getElementById('qVisualContainer').innerHTML = q.visual;
+            document.getElementById('qChallenge').textContent = q.challenge;
+
+            // Render Options
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            const hasAnswered = userAnswers.hasOwnProperty(currentIndex);
+            const selectedOpt = userAnswers[currentIndex];
+
+            q.options.forEach((optText, optIdx) => {
+                const btn = document.createElement('button');
+                btn.disabled = hasAnswered;
+
+                let baseStyle = 'option-card p-4 rounded-2xl border-2 text-left font-semibold text-sm sm:text-base flex items-center justify-between gap-3 ';
+                let iconHTML = `<span class="w-7 h-7 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center text-xs font-bold text-slate-600 flex-shrink-0">${String.fromCharCode(65 + optIdx)}</span>`;
+
+                if (!hasAnswered) {
+                    baseStyle += 'bg-white border-slate-200 hover:border-teal-500 hover:bg-teal-50/40 text-slate-800 shadow-sm';
+                } else {
+                    if (optIdx === q.correct) {
+                        baseStyle += 'bg-emerald-50 border-emerald-500 text-emerald-950 shadow-sm';
+                        iconHTML = `<span class="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs flex-shrink-0"><i class="fa-solid fa-check"></i></span>`;
+                    } else if (optIdx === selectedOpt && optIdx !== q.correct) {
+                        baseStyle += 'bg-rose-50 border-rose-500 text-rose-950';
+                        iconHTML = `<span class="w-7 h-7 rounded-full bg-rose-500 text-white flex items-center justify-center text-xs flex-shrink-0"><i class="fa-solid fa-xmark"></i></span>`;
+                    } else {
+                        baseStyle += 'bg-slate-50 border-slate-200 text-slate-400 opacity-75';
+                    }
+                }
+
+                btn.className = baseStyle;
+                btn.innerHTML = `<span>${optText}</span>${iconHTML}`;
+                btn.onclick = () => selectAnswer(optIdx);
+                optionsContainer.appendChild(btn);
+            });
+
+            // Explanation Box
+            const expBox = document.getElementById('explanationBox');
+            if (hasAnswered) {
+                const isCorrect = selectedOpt === q.correct;
+                expBox.classList.remove('hidden');
+                if (isCorrect) {
+                    expBox.className = 'rounded-2xl p-5 border-2 bg-emerald-50/70 border-emerald-300 transition-all';
+                    document.getElementById('expIconBox').className = 'w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-bold text-lg flex-shrink-0 mt-0.5';
+                    document.getElementById('expIconBox').innerHTML = '<i class="fa-solid fa-check"></i>';
+                    document.getElementById('expHeading').className = 'font-game font-bold text-lg text-emerald-900';
+                    document.getElementById('expHeading').textContent = `Hebat! Jawabanmu Benar (+${calculatePointsPerQuestion()} Poin)`;
+                } else {
+                    expBox.className = 'rounded-2xl p-5 border-2 bg-rose-50/70 border-rose-300 transition-all';
+                    document.getElementById('expIconBox').className = 'w-10 h-10 rounded-xl bg-rose-600 flex items-center justify-center text-white font-bold text-lg flex-shrink-0 mt-0.5';
+                    document.getElementById('expIconBox').innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                    document.getElementById('expHeading').className = 'font-game font-bold text-lg text-rose-900';
+                    document.getElementById('expHeading').textContent = 'Kurang Tepat! Yuk Simak Pembahasannya';
+                }
+                document.getElementById('expCorrectKey').textContent = `Kunci Jawaban: ${String.fromCharCode(65 + q.correct)}`;
+                document.getElementById('expText').innerHTML = q.explanation;
+            } else {
+                expBox.classList.add('hidden');
+            }
+
+            // Bottom Navigation Buttons
+            document.getElementById('prevBtn').disabled = currentIndex === 0;
+            const nextBtn = document.getElementById('nextBtn');
+            if (currentIndex === total - 1) {
+                nextBtn.innerHTML = `<span>Lihat Hasil Akhir</span> <i class="fa-solid fa-flag-checkered"></i>`;
+                nextBtn.className = 'btn-3d btn-orange px-6 py-3 rounded-xl text-white font-game font-bold text-base flex items-center gap-2';
+            } else {
+                nextBtn.innerHTML = `<span>Soal Berikutnya</span> <i class="fa-solid fa-arrow-right"></i>`;
+                nextBtn.className = 'btn-3d btn-teal px-6 py-3 rounded-xl text-white font-game font-bold text-base flex items-center gap-2';
+            }
+        }
+
+        function selectAnswer(optIdx) {
+            if (userAnswers.hasOwnProperty(currentIndex)) return;
+            userAnswers[currentIndex] = optIdx;
+
+            const q = activeQuestions[currentIndex];
+            if (optIdx === q.correct) {
+                currentStreak++;
+                if (currentStreak > bestStreak) bestStreak = currentStreak;
+                playTone('correct');
+            } else {
+                currentStreak = 0;
+                playTone('wrong');
+            }
+
+            updateLiveHeader();
+            renderCurrentQuestion();
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                playTone('click');
+                currentIndex--;
+                renderCurrentQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function nextQuestion() {
+            playTone('click');
+            if (currentIndex < activeQuestions.length - 1) {
+                currentIndex++;
+                renderCurrentQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                showFinalResults();
+            }
+        }
+
+        // ==================== QUESTION MAP MODAL ====================
+        function openQuestionMap() {
+            playTone('click');
+            const grid = document.getElementById('mapGridContainer');
+            grid.innerHTML = '';
+
+            activeQuestions.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                let style = 'h-11 rounded-xl font-game font-bold text-sm border-2 transition flex items-center justify-center ';
+
+                if (userAnswers.hasOwnProperty(idx)) {
+                    if (userAnswers[idx] === q.correct) {
+                        style += 'bg-emerald-500 text-white border-emerald-600';
+                    } else {
+                        style += 'bg-rose-500 text-white border-rose-600';
+                    }
+                } else {
+                    style += 'bg-slate-100 text-slate-700 border-slate-200 hover:border-teal-500';
+                }
+
+                if (idx === currentIndex) {
+                    style += ' ring-4 ring-amber-400';
+                }
+
+                btn.className = style;
+                btn.textContent = idx + 1;
+                btn.onclick = () => {
+                    currentIndex = idx;
+                    closeQuestionMap();
+                    renderCurrentQuestion();
+                };
+                grid.appendChild(btn);
+            });
+
+            const modal = document.getElementById('questionMapModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeQuestionMap() {
+            const modal = document.getElementById('questionMapModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function finishQuizNow() {
+            closeQuestionMap();
+            showFinalResults();
+        }
+
+        // ==================== FINAL RESULTS & REVIEW ====================
+        function showFinalResults() {
+            playTone('correct');
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+            document.getElementById('mapBtn').classList.add('hidden');
+
+            const playerName = document.getElementById('playerNameInput').value.trim() || 'Juara MUGEB';
+            const playerAbsent = document.getElementById('playerAbsentInput').value.trim() || '-';
+            const playerClass = document.getElementById('playerClassInput').value;
+            const durationText = quizStartTime ? formatDuration(Date.now() - quizStartTime) : '00:00';
+
+            document.getElementById('resultPlayerInfo').textContent = `${playerName} (Absen: ${playerAbsent}) • ${playerClass}`;
+
+            let correctCount = 0;
+            let wrongCount = 0;
+            let answerDetails = [];
+
+            activeQuestions.forEach((q, idx) => {
+                const ansIdx = userAnswers[idx];
+                const ansChar = ansIdx !== undefined ? String.fromCharCode(65 + ansIdx) : '-';
+                const isRight = ansIdx === q.correct;
+                if (isRight) {
+                    correctCount++;
+                } else {
+                    wrongCount++;
+                }
+                answerDetails.push(`No.${q.id}:${ansChar}(${isRight ? 'B' : 'S'})`);
+            });
+
+            const finalScore = Math.round((correctCount / activeQuestions.length) * 100);
+            document.getElementById('finalScoreValue').textContent = finalScore;
+            document.getElementById('statCorrect').textContent = correctCount;
+            document.getElementById('statWrong').textContent = wrongCount;
+            document.getElementById('statBestStreak').textContent = bestStreak;
+            document.getElementById('statDuration').textContent = durationText;
+
+            const medalBadge = document.getElementById('finalMedalBadge');
+            if (finalScore >= 85) {
+                medalBadge.textContent = '🏆 Medali Emas Bebras MUGEB';
+                medalBadge.className = 'mt-1 px-3 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-xs';
+            } else if (finalScore >= 70) {
+                medalBadge.textContent = '🥈 Medali Perak Bebras MUGEB';
+                medalBadge.className = 'mt-1 px-3 py-0.5 rounded-full bg-slate-200 text-slate-800 font-bold text-xs';
+            } else {
+                medalBadge.textContent = '🥉 Semangat Berlatih Lagi!';
+                medalBadge.className = 'mt-1 px-3 py-0.5 rounded-full bg-orange-100 text-orange-800 font-bold text-xs';
+            }
+
+            // Prepare Payload & Send to Google Spreadsheet
+            const modeLabel = selectedMode === 'ALL' ? '25 Soal Lengkap' : (selectedMode === 'ORIGINAL' ? '15 Soal Asli' : '10 Soal Pengembangan');
+            const payload = {
+                waktu: new Date().toLocaleString('id-ID'),
+                nama: playerName,
+                absen: playerAbsent,
+                kelas: playerClass,
+                paket: modeLabel,
+                skor: finalScore,
+                benar: correctCount,
+                salah: wrongCount,
+                streak: bestStreak,
+                durasi: durationText,
+                detailJawaban: answerDetails.join(', '),
+                cloudSynced: false
+            };
+
+            lastSubmittedPayload = payload;
+            recapHistory.unshift(payload);
+            submitScoreToSpreadsheet(payload);
+
+            // Populate Complete Review List
+            const reviewContainer = document.getElementById('reviewListContainer');
+            reviewContainer.innerHTML = '';
+
+            activeQuestions.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.correct;
+                const statusBadge = isCorrect
+                    ? `<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs"><i class="fa-solid fa-check mr-1"></i>Benar</span>`
+                    : `<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-bold text-xs"><i class="fa-solid fa-xmark mr-1"></i>${userAns === undefined ? 'Belum Dijawab' : 'Salah'}</span>`;
+
+                const card = document.createElement('div');
+                card.className = 'p-4 rounded-2xl border border-slate-200 bg-slate-50/70 space-y-2';
+                card.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="font-bold text-slate-800 text-sm sm:text-base">
+                            <span class="text-teal-700">#${idx + 1}</span> ${q.flag} ${q.title}
+                            <span class="text-xs font-normal text-slate-500 ml-1">(${q.code})</span>
+                        </div>
+                        ${statusBadge}
+                    </div>
+                    <p class="text-xs sm:text-sm font-semibold text-slate-700">${q.challenge}</p>
+                    <div class="text-xs space-y-1 bg-white p-3 rounded-xl border border-slate-200">
+                        <div><strong>Jawabanmu:</strong> <span class="${isCorrect ? 'text-emerald-700 font-bold' : 'text-rose-600 font-bold'}">${userAns !== undefined ? q.options[userAns] : 'Tidak dijawab'}</span></div>
+                        <div><strong>Kunci Jawaban:</strong> <span class="text-teal-700 font-bold">${q.options[q.correct]}</span></div>
+                        <div class="pt-1 text-slate-600 border-t border-slate-100 mt-1"><strong>Pembahasan:</strong> ${q.explanation}</div>
+                    </div>
+                `;
+                reviewContainer.appendChild(card);
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ==================== GOOGLE SPREADSHEET INTEGRATION & EXPORT ====================
+        async function submitScoreToSpreadsheet(payload) {
+            const statusBox = document.getElementById('sheetSyncStatusBox');
+            const retryBtn = document.getElementById('retrySyncBtn');
+            const scriptUrl = getActiveScriptUrl();
+
+            if (!scriptUrl) {
+                statusBox.className = 'mt-5 max-w-xl mx-auto px-4 py-2.5 rounded-2xl bg-amber-400/20 border border-amber-300/40 text-amber-100 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2';
+                statusBox.innerHTML = `<i class="fa-solid fa-table"></i> <span>Tersimpan di Tabel Rekap Aplikasi. <button onclick="openTeacherModal()" class="underline font-bold text-white ml-1">Klik di sini untuk menghubungkan Google Spreadsheet</button></span>`;
+                retryBtn.classList.add('hidden');
+                return;
+            }
+
+            statusBox.className = 'mt-5 max-w-xl mx-auto px-4 py-2.5 rounded-2xl bg-white/15 border border-white/20 text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-2';
+            statusBox.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Mengirim rekap nilai ke Google Spreadsheet...</span>`;
+            retryBtn.classList.add('hidden');
+
+            try {
+                await fetch(scriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                payload.cloudSynced = true;
+                statusBox.className = 'mt-5 max-w-xl mx-auto px-4 py-2.5 rounded-2xl bg-emerald-500/30 border border-emerald-300/50 text-emerald-50 text-xs sm:text-sm font-bold flex items-center justify-center gap-2';
+                statusBox.innerHTML = `<i class="fa-solid fa-cloud-check text-emerald-300"></i> <span>Berhasil! Nilai & rincian jawaban telah terekap di Google Spreadsheet.</span>`;
+            } catch (err) {
+                statusBox.className = 'mt-5 max-w-xl mx-auto px-4 py-2.5 rounded-2xl bg-rose-500/30 border border-rose-300/50 text-rose-100 text-xs sm:text-sm font-bold flex items-center justify-center gap-2';
+                statusBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>Gagal mengirim ke Spreadsheet. Periksa koneksi internet atau URL Script.</span>`;
+                retryBtn.classList.remove('hidden');
+                retryBtn.classList.add('inline-flex');
+            }
+        }
+
+        function manualResendToSheet() {
+            if (lastSubmittedPayload) {
+                submitScoreToSpreadsheet(lastSubmittedPayload);
+            }
+        }
+
+        function openLeaderboardModal() {
+            playTone('click');
+            updateSheetIndicatorUI();
+            renderRecapTable();
+            const modal = document.getElementById('leaderboardModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeLeaderboardModal() {
+            const modal = document.getElementById('leaderboardModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function renderRecapTable() {
+            const tbody = document.getElementById('recapTableBody');
+            tbody.innerHTML = '';
+
+            if (recapHistory.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" class="p-8 text-center text-slate-400 font-semibold">
+                            Belum ada data pengerjaan pada sesi ini. Silakan mainkan kuis atau klik "Muat dari Spreadsheet".
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            recapHistory.forEach((row, i) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition';
+                const syncBadge = row.cloudSynced
+                    ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[11px]">Terkirim</span>`
+                    : `<span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-semibold text-[11px]">Lokal</span>`;
+
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-500">${i + 1}</td>
+                    <td class="p-3 text-slate-600 whitespace-nowrap">${row.waktu || '-'}</td>
+                    <td class="p-3 font-bold text-slate-800">${row.nama || '-'}</td>
+                    <td class="p-3 text-slate-600">${row.absen || '-'}</td>
+                    <td class="p-3 text-slate-600">${row.kelas || '-'}</td>
+                    <td class="p-3 text-slate-600">${row.paket || '-'}</td>
+                    <td class="p-3 text-center font-semibold"><span class="text-emerald-600">${row.benar}B</span> / <span class="text-rose-600">${row.salah}S</span></td>
+                    <td class="p-3 text-center font-mono text-slate-600">${row.durasi || '-'}</td>
+                    <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-lg bg-teal-100 text-teal-900 font-game font-bold">${row.skor}</span></td>
+                    <td class="p-3 text-center">${syncBadge}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function fetchCloudRecap() {
+            const scriptUrl = getActiveScriptUrl();
+            if (!scriptUrl) {
+                openTeacherModal();
+                return;
+            }
+            playTone('click');
+            try {
+                const res = await fetch(scriptUrl);
+                const json = await res.json();
+                if (json && Array.isArray(json.data)) {
+                    recapHistory = json.data.reverse().map(item => ({
+                        waktu: new Date(item.waktu).toLocaleString('id-ID'),
+                        nama: item.nama,
+                        absen: item.absen,
+                        kelas: item.kelas,
+                        paket: item.paket,
+                        skor: item.skor,
+                        benar: item.benar,
+                        salah: item.salah,
+                        streak: item.streak,
+                        durasi: item.durasi,
+                        cloudSynced: true
+                    }));
+                    renderRecapTable();
+                }
+            } catch (e) {
+                console.warn('Fetch spreadsheet error:', e);
+            }
+        }
+
+        function exportRecapToCSV() {
+            playTone('click');
+            if (recapHistory.length === 0) return;
+
+            const headers = ['No', 'Waktu Submit', 'Nama Siswa', 'No Absen', 'Kelas', 'Paket Soal', 'Skor Akhir', 'Benar', 'Salah', 'Streak Terbaik', 'Durasi', 'Detail Jawaban'];
+            const csvRows = [headers.join(',')];
+
+            recapHistory.forEach((r, idx) => {
+                const row = [
+                    idx + 1,
+                    `"${(r.waktu || '').replace(/"/g, '""')}"`,
+                    `"${(r.nama || '').replace(/"/g, '""')}"`,
+                    `"${(r.absen || '').replace(/"/g, '""')}"`,
+                    `"${(r.kelas || '').replace(/"/g, '""')}"`,
+                    `"${(r.paket || '').replace(/"/g, '""')}"`,
+                    r.skor || 0,
+                    r.benar || 0,
+                    r.salah || 0,
+                    r.streak || 0,
+                    `"${r.durasi || '-'}"`,
+                    `"${(r.detailJawaban || '-').replace(/"/g, '""')}"`
+                ];
+                csvRows.push(row.join(','));
+            });
+
+            const csvBlob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(csvBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Rekap_Nilai_MUGEB_Bebras_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // ==================== TEACHER SETTINGS MODAL ====================
+        function openTeacherModal() {
+            playTone('click');
+            document.getElementById('scriptUrlInput').value = getActiveScriptUrl();
+            document.getElementById('scriptUrlSaveFeedback').classList.add('hidden');
+            const modal = document.getElementById('teacherModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeTeacherModal() {
+            const modal = document.getElementById('teacherModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function saveScriptUrl() {
+            playTone('correct');
+            customScriptUrl = document.getElementById('scriptUrlInput').value.trim();
+            updateSheetIndicatorUI();
+            const fb = document.getElementById('scriptUrlSaveFeedback');
+            fb.textContent = customScriptUrl
+                ? '✅ URL Google Apps Script berhasil disimpan! Setiap pengerjaan siswa akan otomatis dikirim ke Spreadsheet.'
+                : '⚠️ URL dikosongkan. Aplikasi berjalan dalam mode penyimpanan tabel lokal.';
+            fb.classList.remove('hidden');
+        }
+
+        async function testScriptConnection() {
+            saveScriptUrl();
+            const url = getActiveScriptUrl();
+            const fb = document.getElementById('scriptUrlSaveFeedback');
+            if (!url) {
+                fb.textContent = '❌ Masukkan URL Web App terlebih dahulu sebelum melakukan tes kirim.';
+                fb.classList.remove('hidden');
+                return;
+            }
+            fb.textContent = '⏳ Mengirim baris uji coba ke Google Spreadsheet...';
+            fb.classList.remove('hidden');
+
+            const samplePayload = {
+                waktu: new Date().toLocaleString('id-ID'),
+                nama: 'Uji Coba Koneksi Guru',
+                absen: '00',
+                kelas: 'Tim Olimpiade MUGEB',
+                paket: 'Tes Integrasi Spreadsheet',
+                skor: 100,
+                benar: 25,
+                salah: 0,
+                streak: 25,
+                durasi: '01:20',
+                detailJawaban: 'Tes Koneksi Berhasil'
+            };
+
+            try {
+                await fetch(url, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(samplePayload)
+                });
+                fb.textContent = '✅ Data uji coba berhasil dikirim! Silakan cek tab sheet "RekapNilai" pada Google Spreadsheet Anda.';
+            } catch (err) {
+                fb.textContent = '❌ Gagal menghubungi URL tersebut. Pastikan URL berakhiran /exec dan akses disetel ke "Anyone" (Siapa saja).';
+            }
+        }
+
+        function copyAppsScriptCode() {
+            const codeArea = document.getElementById('appsScriptCodeArea');
+            codeArea.select();
+            document.execCommand('copy');
+            const btnText = document.getElementById('copyBtnText');
+            btnText.textContent = 'Tersalin!';
+            playTone('correct');
+            setTimeout(() => {
+                btnText.textContent = 'Salin Kode Apps Script';
+            }, 2000);
+        }
+
+        function restartSameMode() {
+            startGame();
+        }
+
+        function returnToMenu() {
+            playTone('click');
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('startScreen').classList.remove('hidden');
+            document.getElementById('liveStats').classList.add('hidden');
+            document.getElementById('mapBtn').classList.add('hidden');
+        }
+
+        function confirmReturnHome() {
+            returnToMenu();
+        }
+    </script>
+</body>
+</html>
